@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1677337541 "d:/Universita/Tesi/tesi.tex" "tesi.pdf" "tesi" 1677337542 0
+["pdflatex"] 1677657623 "d:/Universita/Tesi/tesi.tex" "tesi.pdf" "tesi" 1677657624 0
   "c:/texlive/2022/texmf-dist/fonts/enc/dvips/base/8r.enc" 1677052440 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "c:/texlive/2022/texmf-dist/fonts/map/fontname/texfonts.map" 1677052850 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "c:/texlive/2022/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1677055836 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -30,9 +30,9 @@
   "c:/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1677056459 4662804 131178ccc9b2f4741a821427ce79dce1 ""
   "c:/texlive/2022/texmf-var/web2c/pdftex/pdflatex.fmt" 1677056641 7879496 dc2d544f44dd508ea0fecde8384b5660 ""
   "c:/texlive/2022/texmf.cnf" 1677056437 713 614551405fc44b98efbf516466e3c909 ""
-  "d:/Universita/Tesi/tesi.tex" 1677337540 719 2581ff4d19a2e72ccb63d83a9d0ac054 ""
-  "tesi.aux" 1677337542 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
-  "tesi.tex" 1677337540 719 2581ff4d19a2e72ccb63d83a9d0ac054 ""
+  "d:/Universita/Tesi/tesi.tex" 1677657623 1829 abd16affe113cfd4698ed81fb9c1ccea ""
+  "tesi.aux" 1677657624 368 9d805c04cb27ab9affdc59effb1950a7 "pdflatex"
+  "tesi.tex" 1677657623 1829 abd16affe113cfd4698ed81fb9c1ccea ""
   (generated)
   "tesi.aux"
   "tesi.log"
