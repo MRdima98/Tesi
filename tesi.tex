@@ -17,28 +17,67 @@
 \pagenumbering{arabic}
 \begin{document}
 \maketitle
-\par Introduzione
-\par 
 \section{Presentazione della situazione esistente}
 \subsection{Engim srl}
-Engim è un azienda informatica piccola che ha principalmente due prodotti, i
-servizio gps e twicetouch. Il primo è il noleggio di tracker gps principalmente 
-ai comuni. Questi tracker vengono usati per tracciare la neve pulita e il 
-sale sparso. Twicetouch è il noleggio di dispositivi di sicurezza. In particolare 
-il badge è un DPI che nel caso in cui il lavoratore cada oppure rimanga fermo 
-per un tempo eccessivo, presumibilmente svenuto, il dispostivo manda messaggi 
-e effettua chiamate a dei numeri di scelta. 
-Il prodotto principale di engim sono i tracker.
-\subsection{Infrastuttura}
-Engim è organizzata su vari server. Le tecnologie usate sono Ruby on rails full
-stack per la parte web e android studio per la parte di app. Onde di evitare 
-sovvracarico su un singolo server l'azienda ha molteplici server, dividendo 
-quindi il lavoro. Inoltre esiste un sistema di reportistica realizzato direttamente
-dentro rails, ma questo ha una serie di problemi:
+Engim è una piccola azienda informatica che ha due prodotti principali: servizioGPS e TwiceTouch.
+ServizioGPS è un servizio di noleggio di tracker gps ed è il prodotto di punta. 
+La maggior parte dei clienti sono comuni che usano i nostri dispositivi per tracciare il 
+lavoro delle macchine pulisci neve e spargi sale. 
+I tracker sono sia dispositivi fisici da collegare al veicolo che un app per 
+android. 
+\newline Twicetouch è un servizio di noleggio di dispositivi di sicurezza individuale. 
+Il prodotto serve per i lavoratori in solitario, nel evenienza di un qualsiasi 
+incidente viene inviata una segnalazione a dei numeri preposti. Questo segnalazione 
+avviene nel caso in cui venga avvertito un grosso urto, oppure il lavoratore è 
+fermo per un periodo prolungato, presumibilmente svenuto. Simile a servizioGPS c'è 
+un prodotto fisico, il badge di TwiceTouch e un app per telefono.
 
-- La gemma(denominazione delle librerie di ruby) utilizzata per creare i
-
-database non è mantenuta e inoltre 
+\subsection{Infrastruttura}
+Le tecnologie usate per servizioGPS sono le seguenti:
+\begin{itemize}
+  \item Ruby on rails full stack
+  \item Mariadb e Redis come database
+  \item Python come back end di supporto
+  \item Java per i prodotti app
+\end{itemize}
+Il servizio è inoltre diviso su molteplici server per evitare sovraccarico nelle 
+giornate invernali, quando arrivato migliaia di punti contemporaneamente.
+Recentemente è stato un introdotto un server in AWS, aprendo la possibilità di 
+estrarre logica comune a tutti i server tramite le lambda e quindi rimuovere il 
+peso dai singoli server. 
+\subsection{Microservizi}
+In alcuni casi non è necessario avere un servizio costantemente acceso che gira, 
+nello specifico, se devo fare alcune operazioni periodiche o in maniera discontinua 
+allora non è utile avere un servizio o un api che è sempre in ascolto per un input.
+Ecco che entrano in gioco i Microservizi. 
+\\ A differenza dei servizi, un microservizio non ha un suo server, non ha un suo 
+ambiente e non dipende da nessun altra tecnologia. Il Microservizio si crea 
+l'ambiente ogni volta che viene richiamato (cold start), e rimane attivo per un 
+lasso di tempo, svolge una specifica funzione, definita da un API precisa, e 
+ritorna un messaggio HTML. 
+Diventa molto vantaggiosa tale operazione soprattutto nel ambito web dove è molto 
+naturale usare delle api per fare specifiche operazioni.
+\subsection{Sistema automatico di generazione di report}
+Le informazioni di ogni cliente vengono archiviate anno dopo anno. Nel caso in cui 
+il cliente abbia necessità o interesse a salvare i dati del loro lavoro possono 
+stampare o scaricare una serie di informazioni dal sito. La più importante stampa 
+sono i punti che arrivano e le loro specifiche. Al momento questo è gestito
+internamente tramite una gemma di ruby. Il sistema attuale crea un file HTML, 
+che viene poi convertito in pdf. 
+Questo crea una serie di gravi problemi:
+\begin{itemize}
+  \item Fare il parsing simili è estremamente costoso in maniera computazionale
+  \item Per quanto è facile scrivere HTML il controllo sul prodotto finale è basso
+  \item La conversione è molto lenta 
+\end{itemize}
+Questa operazione inoltre si presta molto bene ai microservizi. È un operazione 
+ripetitiva, ben definita che ritorna sempre un file pdf. Quindi sarebbe possibile 
+evitare calcoli extra di parsing e evitare di sovraccaricare il server se venisse 
+esportata come microservizio. 
+Inoltre una volta creata la logica per una singola stampa è possibile allargare
+la lamba per la stampa di un qualsiasi altro servizio. 
+\section{Requisiti del progetto}
+\subsection{Robe}
 % \par Requisiti e progetto
 % \par Implementazione
 % \par Applicazione di esempio
