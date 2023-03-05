@@ -1,5 +1,9 @@
 \documentclass[12pt]{article}
 \usepackage{amsmath}
+\usepackage{emptypage}
+\usepackage{blindtext}
+\usepackage{titlesec}
+\usepackage[hidelinks]{hyperref}
 \author{}
 \title{
     \huge 
@@ -11,16 +15,30 @@
         \huge \par \textbf{Engim report service}
     \vfil
     \normalsize
-    \begin{tabular}{lp{0.5\textwidth}l}
+    \begin{tabular}{lp{0.4\textwidth}l}
       Relatore: & & Candidato: \\
-      Prof Canali & &  Dumitru Frunza \\
+      Prof Claudia Canali & &  Dumitru Frunza \\
       \end{tabular}
 }
 \date{Anno academico 2021/2022}
 \linespread{1.5}
-\pagenumbering{arabic}
+
+
+
 \begin{document}
 \maketitle
+\thispagestyle{empty}
+\newpage 
+\thispagestyle{empty}
+\
+\newpage
+\pagenumbering{roman}
+\addtocounter{page}{0}
+\tableofcontents
+\newpage
+
+\pagenumbering{arabic}
+\addtocounter{page}{0}
 \section{Engim Srl}
 \subsection{L'azienda}
 Engim è una società che si occupa di creare soluzioni tecnologiche in ambito 
@@ -45,51 +63,63 @@ Similmente a servizioGPS è possibile noleggiare un dispositivo fisico (badge) o
 l'app per android. In entrambi i casi è possibile impostare i numeri in caso di 
 emergenza, che riceveranno una chiamata e un messagio SMS.
 
-
 \subsection{Infrastruttura}
 Le tecnologie usate per servizioGPS sono le seguenti:
 \begin{itemize}
   \item Ruby on rails full stack
   \item Mariadb e Redis come database
   \item Python come back end di supporto
-  \item Java per i prodotti app
+  \item Java per il prodotti app
 \end{itemize}
-Il servizio è inoltre diviso su molteplici server per evitare sovraccarico nelle
-giornate invernali, quando arrivato migliaia di punti contemporaneamente.
-Recentemente è stato un introdotto un server in AWS, aprendo la possibilità di
-estrarre logica comune a tutti i server tramite le lambda e quindi rimuovere il
-peso dai singoli server.
+Ruby on rails sviluppa tutta la parte grafica e gran parte del backend di servizioGPS. 
+Il fetcher invece, si dedica esclusivamente alla elaborazione di coordinate gps, 
+dando supporto soprattutto nei momenti di punta. Allo stesso scopo il servizio 
+si appoggia su molteplici server.
+Uno di questi server è Amazon Web Services, che ha permesso l'introduzione dei 
+microservizi. 
+
 \subsection{Microservizi}
-In alcuni casi non è necessario avere un servizio costantemente acceso che gira,
-nello specifico, se devo fare alcune operazioni periodiche o in maniera discontinua
-allora non è utile avere un servizio o un api che è sempre in ascolto per un input.
-Ecco che entrano in gioco i Microservizi.
-\\ A differenza dei servizi, un microservizio non ha un suo server, non ha un suo
-ambiente e non dipende da nessun altra tecnologia. Il Microservizio si crea
-l'ambiente ogni volta che viene richiamato (cold start), e rimane attivo per un
-lasso di tempo, svolge una specifica funzione, definita da un API precisa, e
-ritorna un messaggio HTML.
-Diventa molto vantaggiosa tale operazione soprattutto nel ambito web dove è molto
-naturale usare delle api per fare specifiche operazioni.
+Un servizio è un processo che esegue specifiche operazioni autonomamente, 
+risponde a eventi oppure rimane in attesa di una richiesta. 
+Nel caso in cui queste operazioni vengano svolte continuamente, il servizio è 
+estremamente vantaggioso. Non è però necessario che il servizio sia sempre in 
+esecuzione se viene usato in maniera discontinua o per brevi periodi di tempo. 
+I microservizi coprono questo ruolo, hanno le stesse caratteristiche di un servizio
+ma eseguono solo su richiesta. 
+\\ L'ambiente di esecuzione è completamente gestito da AWS, l'unica necessità per 
+creare un microservizio è caricare il proprio codice. 
+L'ambiente viene creato al momento della richiesta, esegue il codice e cessa di 
+esistere. Naturalmente non esiste uno spazio di archiviazione, quindi nel caso sia
+necessario salvare un file deve essere caricato su un servizio di cloud computing 
+come S3. Un limite dei microservizi è il fatto che si è costretti a una scelta di 
+tecnologie compatibili con l'infrastruttura.
+\\ Tenendo a mente le caratteristiche della tecnologia, un caso d'uso ottimo per i microservizi è 
+un API che viene richiamato per brevi periodi oppure in maniera arbitraria.
+
 \subsection{Sistema automatico di generazione di report}
-Le informazioni di ogni cliente vengono archiviate anno dopo anno. Nel caso in cui
+Le informazioni di ogni cliente vengono archiviate al termine di ogni anno. Nel 
+caso in cui
 il cliente abbia necessità o interesse a salvare i dati del loro lavoro possono
-stampare o scaricare una serie di informazioni dal sito. La più importante stampa
+stampare o scaricare una serie di informazioni dal sito. 
+\\ Le più importante stampe
 sono i punti che arrivano e le loro specifiche. Al momento questo è gestito
-internamente tramite una gemma di ruby. Il sistema attuale crea un file HTML,
-che viene poi convertito in pdf.
+internamente tramite una gemma di ruby. 
+\\ Il sistema attuale crea un istanza di chrome, l'istanza contiene un HTML
+che si desidera convertire in pdf e infine avviene il parsing di del documento.
 Questo crea una serie di gravi problemi:
 \begin{itemize}
-  \item Fare il parsing simili è estremamente costoso in maniera computazionale
-  \item Per quanto è facile scrivere HTML il controllo sul prodotto finale è basso
-  \item La conversione è molto lenta
+  \item La necessità di avviare un istanza di chrome e il parsing di un HTML è
+  estremamente costoso dal punto di vista delle risorse
+  \item Il parsing di un HTML è anche estremamente costoso in termini di tempo,
+  aggravato dalle lunghe query dovute alla grande mole di dati 
+  \item Usare HTML rende semplice l'organizzazione del documento, ma si diventa 
+  dipendenti dalla gemma per il corretto parsing
 \end{itemize}
-Questa operazione inoltre si presta molto bene ai microservizi. È un operazione
-ripetitiva, ben definita che ritorna sempre un file pdf. Quindi sarebbe possibile
-evitare calcoli extra di parsing e evitare di sovraccaricare il server se venisse
-esportata come microservizio.
-Inoltre una volta creata la logica per una singola stampa è possibile allargare
-la lamba per la stampa di un qualsiasi altro servizio.
+La natura del nostro problema rende molto facile la scelta di un microservizio.
+L'operazione è ripetitiva, ben definita e usata per brevi periodi. Altri vantaggi 
+importanti sono il risparmio di risorse del server, che evita di gravare sulle 
+operazioni più critiche, e la possibilità di usare il microservizio per qualsiasi 
+altro prodotto Engim.
 
 
 
