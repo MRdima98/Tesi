@@ -4,6 +4,9 @@
 \usepackage{blindtext}
 \usepackage{titlesec}
 \usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+\usepackage[italian]{babel}
+\graphicspath{ {./images/} }
 \author{}
 \title{
     \huge 
@@ -17,7 +20,7 @@
     \normalsize
     \begin{tabular}{lp{0.4\textwidth}l}
       Relatore: & & Candidato: \\
-      Prof Claudia Canali & &  Dumitru Frunza \\
+      Prof. Claudia Canali & &  Dumitru Frunza \\
       \end{tabular}
 }
 \date{Anno academico 2021/2022}
@@ -34,7 +37,11 @@
 \newpage
 \pagenumbering{roman}
 \addtocounter{page}{0}
+\listoffigures
+\newpage
+\phantomsection
 \tableofcontents
+\addcontentsline{tesi}{Infrastruttura}{Infrastruttura}
 \newpage
 
 \pagenumbering{arabic}
@@ -46,18 +53,18 @@ ICT, telecomunicazioni, sistemi di gestione e mobilità. Da oltre 10 anni operan
 nel mercato della tracciabilità di flotte e attività e della 
 sicurezza dei lavoratori in solitario.
 \\ ServizioGPS è il noleggio di tracker gps per veicoli lavoratori. 
-Una sostanziosa parte dei clienti sono comuni, che tramite i prodotti Engim, 
-tracciano il percorso delle macchine pulisci neve e spargi sale.
+Una prevalente parte dei clienti sono comuni che, tramite i prodotti Engim, 
+tracciano il percorso delle macchine spazzaneve e spargisale.
 I tracker possono essere prodotti fisici oppure un app per smartphone. A loro 
-volta i prodotti fisici si dividono in tracker fissi o mobili. Il servizio include
+volta i prodotti fisici si dividono in fissi e mobili. Il servizio include
 anche un gestionale per poter visualizzare, modificare o archiviare i propri dati.
 \\ Twicetouch è noleggio di dispositivi di sicurezza individuale.
 Il prodotto tutela i lavoratori in solitario mandando una segnalazione in caso di
 emergenza. Esistono due tipi di rilevazione: 
 \begin{itemize}
   \item caduta: l'accelerometro del dispositivo rileva un urto pericoloso
-  \item assenza: il dispositivo non si è mosso per un lasso prolungato di tempo, 
-  quindi si presume che il lavoratore possa essere incosciente
+  \item assenza di movimento: il lavoratore non si è mosso per un lasso prolungato di tempo, 
+  quindi si presume che possa essere incosciente
 \end{itemize}
 Similmente a servizioGPS è possibile noleggiare un dispositivo fisico (badge) oppure
 l'app per android. In entrambi i casi è possibile impostare i numeri in caso di 
@@ -69,51 +76,64 @@ Le tecnologie usate per servizioGPS sono le seguenti:
   \item Ruby on rails full stack
   \item Mariadb e Redis come database
   \item Python come back end di supporto
-  \item Java per il prodotti app
+  \item Java per il prodotti app 
 \end{itemize}
-Ruby on rails sviluppa tutta la parte grafica e gran parte del backend di servizioGPS. 
-Il fetcher invece, si dedica esclusivamente alla elaborazione di coordinate gps, 
-dando supporto soprattutto nei momenti di punta. Allo stesso scopo il servizio 
-si appoggia su molteplici server.
-Uno di questi server è Amazon Web Services, che ha permesso l'introduzione dei 
-microservizi. 
+\begin{figure}[h]
+\includegraphics[scale = 0.6]{infrastructure.png}
+\caption{Architettura}
+\label{fig:mesh1}
+\end{figure}
+Ruby on Rails è usato per front-end e gran parte del backend di servizioGPS. 
+Il fetcher invece si dedica esclusivamente alla elaborazione di coordinate gps,
+per poter alleviare il carico di lavoro da Rails.
+Allo stesso scopo il servizio si appoggia su molteplici server.
+Uno di questi server è Amazon Web Services, un servizio di cloud computing 
+che oltre al noleggio di un server tradizionale rende possibile 
+anche un architettura a microservizi. 
 
 \subsection{Microservizi}
-Un servizio è un processo che esegue specifiche operazioni autonomamente, 
+Un servizio è un processo che: esegue specifiche operazioni autonomamente, 
 risponde a eventi oppure rimane in attesa di una richiesta. 
 Nel caso in cui queste operazioni vengano svolte continuamente, il servizio è 
 estremamente vantaggioso. Non è però necessario che il servizio sia sempre in 
 esecuzione se viene usato in maniera discontinua o per brevi periodi di tempo. 
 I microservizi coprono questo ruolo, hanno le stesse caratteristiche di un servizio
 ma eseguono solo su richiesta. 
-\\ L'ambiente di esecuzione è completamente gestito da AWS, l'unica necessità per 
-creare un microservizio è caricare il proprio codice. 
+\\ L'ambiente di esecuzione è completamente gestito da AWS, l'unica requisito per 
+creare un microservizio è caricare il proprio codice. In questo caso viene 
+noleggiato il tempo di calcolo invece che una macchiana fisica o virtuale.
 L'ambiente viene creato al momento della richiesta, esegue il codice e cessa di 
-esistere. Naturalmente non esiste uno spazio di archiviazione, quindi nel caso sia
-necessario salvare un file deve essere caricato su un servizio di cloud computing 
-come S3. Un limite dei microservizi è il fatto che si è costretti a una scelta di 
-tecnologie compatibili con l'infrastruttura.
-\\ Tenendo a mente le caratteristiche della tecnologia, un caso d'uso ottimo per i microservizi è 
-un API che viene richiamato per brevi periodi oppure in maniera arbitraria.
+esistere. 
+Quando il microservizio non è attivo non ci sono costi.
+\\ È bene tenere in mente due importanti caratteristiche dei microservizi:
+\begin{itemize}
+  \item L'ambiente non ha spazio di archiviazione, qualora sia necessario 
+  salvare un file, bisogna caricarlo in un servizio di clound computing come S3
+  \item Le tecnologie devono essere compatibili con l'infrastruttura sottostante,
+  il che limita le nostre scelte
+\end{itemize}
+Avendo in mente queste considerazioni, un caso d'uso adatto ai microservizi 
+è un servizio API che viene usato in maniera occasionale oppure per brevi periodi 
+fissi.
 
 \subsection{Sistema automatico di generazione di report}
-Le informazioni di ogni cliente vengono archiviate al termine di ogni anno. Nel 
-caso in cui
-il cliente abbia necessità o interesse a salvare i dati del loro lavoro possono
-stampare o scaricare una serie di informazioni dal sito. 
-\\ Le più importante stampe
-sono i punti che arrivano e le loro specifiche. Al momento questo è gestito
-internamente tramite una gemma di ruby. 
-\\ Il sistema attuale crea un istanza di chrome, l'istanza contiene un HTML
-che si desidera convertire in pdf e infine avviene il parsing di del documento.
-Questo crea una serie di gravi problemi:
+Engim esegue una manutenzione annuale di database, che consiste nell'archiviazione
+dei dati. Questi possono essere salvati dal cliente, nel caso fosse interessato 
+o necessitato, sotto forma di pdf oppure xls.
+\\ 
+Le informazioni più importanti sono l'elenco e le specifiche di tutte le "attività". 
+Un'attività contiente una serie di dati, tra cui: coordinate
+gps, costi di lavoro, tempo di lavoro e altro.  
+Al momento il servizio è implementato da Rails tramite una gemma di ruby. 
+Il sistema attuale crea un istanza di chrome, l'istanza contiene un HTML
+che si desidera convertire in pdf e infine avviene il parsing del documento.
+\\ Questo ha una serie di gravi problemi:
 \begin{itemize}
   \item La necessità di avviare un istanza di chrome e il parsing di un HTML è
   estremamente costoso dal punto di vista delle risorse
   \item Il parsing di un HTML è anche estremamente costoso in termini di tempo,
   aggravato dalle lunghe query dovute alla grande mole di dati 
-  \item Usare HTML rende semplice l'organizzazione del documento, ma si diventa 
-  dipendenti dalla gemma per il corretto parsing
+  \item Il  parsing tende a essere poco affidabile
 \end{itemize}
 La natura del nostro problema rende molto facile la scelta di un microservizio.
 L'operazione è ripetitiva, ben definita e usata per brevi periodi. Altri vantaggi 
@@ -123,52 +143,52 @@ altro prodotto Engim.
 
 
 
-\section{Requisiti del progetto}
-\subsection{Descrizione}
-Il progetto deve essere una lambda su AWS. La lambda deve essere in grado di
-ricevere un json, autenticare tramite token e whitelist, salvare il progetto su
-un bucket S3 e ritornare il link di dowload al pdf. Se qualcosa va storto deve
-ritornare 400 se è un problema di input oppure 500 se è un problema di connessione
-al bucket.
-Il programma inoltre deve essere modulare per permettere di espandere in futuro
-le stampe ad altri servizi oltre che servizioGPS e creare altri tipi di stampa
-come kml e exel.
-\subsection{Scelte del linguaggio}
-Le lambda su AWS hanno il supporto per i linguaggi più popolari del momento, in
-particolare ho preso in considerazione python, javascript e ruby. La libreria
-che faceva di più al mio caso era pdfKit di javascript, che è un port di pdfkit
-libreria di php per scrivere pdf senza dover far parsing di altri file.
-Ruby aveva più libreria con parsing intermedi e python aveva libreria non mantenute.
+% \section{Requisiti del progetto}
+% \subsection{Descrizione}
+% Il progetto deve essere una lambda su AWS. La lambda deve essere in grado di
+% ricevere un json, autenticare tramite token e whitelist, salvare il progetto su
+% un bucket S3 e ritornare il link di dowload al pdf. Se qualcosa va storto deve
+% ritornare 400 se è un problema di input oppure 500 se è un problema di connessione
+% al bucket.
+% Il programma inoltre deve essere modulare per permettere di espandere in futuro
+% le stampe ad altri servizi oltre che servizioGPS e creare altri tipi di stampa
+% come kml e exel.
+% \subsection{Scelte del linguaggio}
+% Le lambda su AWS hanno il supporto per i linguaggi più popolari del momento, in
+% particolare ho preso in considerazione python, javascript e ruby. La libreria
+% che faceva di più al mio caso era pdfKit di javascript, che è un port di pdfkit
+% libreria di php per scrivere pdf senza dover far parsing di altri file.
+% Ruby aveva più libreria con parsing intermedi e python aveva libreria non mantenute.
 
 
-\section{Sviluppo}
-\subsection{Workflow}
-Il mio senior ha deciso di fare un implementazione a grossi step, ogni volta
-facendo un piccolo pezzo per poi controllare che tutto funzioni correttamente.
-Ogni issue è uno step e a ogni step il progetto viene testato sia manualmente su
-aws tramite simulazioni di richiesta sia con test automatizzati tramite mocha.
+% \section{Sviluppo}
+% \subsection{Workflow}
+% Il mio senior ha deciso di fare un implementazione a grossi step, ogni volta
+% facendo un piccolo pezzo per poi controllare che tutto funzioni correttamente.
+% Ogni issue è uno step e a ogni step il progetto viene testato sia manualmente su
+% aws tramite simulazioni di richiesta sia con test automatizzati tramite mocha.
 
-\subsection{Creazione di un file e salvataggio su S3}
-La lamda è una funzione assincrona che viene eseguita ogni volta che riceve una
-chiamata https. Bisogna prima di tutto creare una connessione con il bucket di s3,
-una volta creata questa connessione si può salvare un file passando il filepath
-oppure uno stream di data e avremo salvato il file su S3
+% \subsection{Creazione di un file e salvataggio su S3}
+% La lamda è una funzione assincrona che viene eseguita ogni volta che riceve una
+% chiamata https. Bisogna prima di tutto creare una connessione con il bucket di s3,
+% una volta creata questa connessione si può salvare un file passando il filepath
+% oppure uno stream di data e avremo salvato il file su S3
 
-\subsection{Stampa di un file pdf da un json}
-Le operazioni utili al mio scopo text per scrivere una stringa,
-stroke per disegnare una linea e infine è possibile manipolare colori e font.
-Inizialmente avevo deciso di programmare in maniera funzionale perché risultava
-una logica più semplice essendo un breve script, con l'aumentare della complessità
-e con il modo di esportare di javascript ho pensato che una classe fosse più adeguata.
-Quindi c'è un costruttore che definisce la grandezza del documento, questo mantiene
-la relazione di un foglio A4 (circa 1.41) in modo che stampa e visualizzazione sono
-sempre molto comodi. Dopo l'inizializzazione si inizia la scrittura dei blocchi.
-Ogni json potrebbe avere un header, body e table. Se uno dei 3 manca, non verrà
-scritto e gli altri si organizzeranno di conseguenza. Ogni metodo di scrittura
-controlla che non ci siano dati mancanti che possano nuocere alla stampa come ad
-esempio se manca un titolo non è una stampa valida, e ritornano 400. Se tutto va
-bene e la stampa va a buon fine, è possibile mandare l'oggetto con get document.
-Ogni possibile caso è testato con mocha, la connessione con AWS è mochata tramite
-aws-sdk e gran parte dei dati è generata casualmente tramite faker.
-Se tutto va a buon fine il programma ritorna 200 e il link del download.
+% \subsection{Stampa di un file pdf da un json}
+% Le operazioni utili al mio scopo text per scrivere una stringa,
+% stroke per disegnare una linea e infine è possibile manipolare colori e font.
+% Inizialmente avevo deciso di programmare in maniera funzionale perché risultava
+% una logica più semplice essendo un breve script, con l'aumentare della complessità
+% e con il modo di esportare di javascript ho pensato che una classe fosse più adeguata.
+% Quindi c'è un costruttore che definisce la grandezza del documento, questo mantiene
+% la relazione di un foglio A4 (circa 1.41) in modo che stampa e visualizzazione sono
+% sempre molto comodi. Dopo l'inizializzazione si inizia la scrittura dei blocchi.
+% Ogni json potrebbe avere un header, body e table. Se uno dei 3 manca, non verrà
+% scritto e gli altri si organizzeranno di conseguenza. Ogni metodo di scrittura
+% controlla che non ci siano dati mancanti che possano nuocere alla stampa come ad
+% esempio se manca un titolo non è una stampa valida, e ritornano 400. Se tutto va
+% bene e la stampa va a buon fine, è possibile mandare l'oggetto con get document.
+% Ogni possibile caso è testato con mocha, la connessione con AWS è mochata tramite
+% aws-sdk e gran parte dei dati è generata casualmente tramite faker.
+% Se tutto va a buon fine il programma ritorna 200 e il link del download.
 \end{document}
