@@ -43,9 +43,9 @@
 \tableofcontents
 \addcontentsline{tesi}{Infrastruttura}{Infrastruttura}
 \newpage
-
 \pagenumbering{arabic}
 \addtocounter{page}{0}
+
 \section{Introduzione}
 \section{Engim Srl}
 \subsection{L'azienda}
@@ -146,11 +146,11 @@ altro prodotto Engim.
 \section{Requisiti del progetto}
 \subsection{Descrizione}
 Il progetto è una funzione lambda su AWS, ovvero un microservizio. La funzione 
-è chiamata tramite https, e prende in input un json. Il json è contiene i dati 
+è chiamata tramite con una PUT tramite https. Il json contiene i dati 
 di autenticazione e il contenuto da convertire in pdf. L'autenticazione avviene 
 tramite token e whitelist, questi sono salvati come variabili di ambiente su AWS.
-I contenuti invece sono divisi in sezioni per permettere facilitare la dinamicità 
-della stampa.
+I contenuti invece sono divisi in sezioni per permettere dinamicità di stampa, 
+qualora uno dei blocchi fosse assente, semplicemente non verrà stampato. 
 \\ Nel caso in cui la stampa sia avvenuta correttamente la funzione ritorna 200 e 
 il link al file su S3. Se l'input della chiamata risulta errato, la funzione ritorna 
 400 e un messaggio che descrivere l'errore. Infine se avviene un errore di connessione 
@@ -158,14 +158,58 @@ al bucket S3, la funzione ritornerà un errore 500.
 \\ Il progetto deve permettere l'implementazione di stampe diverse da quelle di servizioGPS
 e di altri file di output come kml e xls. 
 
-\subsection{User stories}
-\subsection{Scelte del linguaggio}
-Le lambda su AWS hanno il supporto per i linguaggi più popolari del momento, in
-particolare ho preso in considerazione python, javascript e ruby. La libreria
-che faceva di più al mio caso era pdfKit di javascript, che è un port di pdfkit
-libreria di php per scrivere pdf senza dover far parsing di altri file.
-Ruby aveva più libreria con parsing intermedi e python aveva libreria non mantenute.
+\subsection{Sicurezza}
+L'autenticazione avviene a livello di codice. AWS permette di creare variabili
+d'ambiente, evitando che siano scritti in chiaro nel codice. Una di queste variabili 
+è un token di autenticazione, esso viene confrontato con il token in input. 
+\\ La whitelist invece è una lista dei domini di Engim, questi vengono caricati in 
+una lista e confrontati con il dominio mittente. 
+\\ Sarebbe stato possibile fare un autenticazione IAM alla lambda. In questo caso 
+bisognerebbe creare un utente per ogni server, che possa fare il login ad AWS prima 
+di poter chiamare la funzione. Indubbiamente questa opzione è più sicuro, allo stesso 
+tempo richiederebbe la creazione e gestione di molteplici utenti, uno per ogni server 
+presente. Inoltre solo l'amministratore ha i permessi per farlo. La poca praticità 
+del metodo unito al fatto che la lambda non contiene alcun informazione sensibile 
+o in generale rischi per Engim, rende la scelta più semplice più attraente.
+\\ Qualsiasi chiamata da dominio esterni oppure senza token verrà tratta come 
+"400 bad request". 
 
+\subsection{Correttezza dei dati}
+Esistono 4 blocchi principali: header, body, table e printInfo. 
+Fin tanto che almeno uno dei 3 è presente insieme al printInfo, 
+la stampa risulta valida.
+\\ Il header può contenere fino a 2 loghi, però deve necessariamente contentere 
+un titolo. 
+\\ Il body può contenere un numero arbitrario di blocchi. Ogni blocco è racchiuso 
+in un rettangolo e a sua volta contiene una serie di titoli con i loro dati. 
+È valida l'assenza di un dato, ma invalida l'assenza di un titolo. 
+\\ Il table contiene una serie di titoli e una serie di righe arbitrariamente lunga. 
+Anche in questo caso non può mancare un titolo ma un dato può essere vuoto. 
+Tra i tipo di dato è possibile avere un immagine, l'immagine viene spediata come 
+base64, se è assente non verrà scritto nulla. 
+\\ Il programma presume che i dati siano corretti, controlla solo la loro presenza.
+
+\subsection{Problemi interni del server}
+\subsection{Presupposti e dipendenze}
+La scelta del linguaggio è limitata da AWS, in particolare i 3 presi sotto considerazione 
+sono state ruby, python e javascript. 
+Le librerie di ruby prevedono il parsing di HTML quindi non risolvono i problemi 
+preesistenti. 
+Python offre molte librerie, ma con funzionalità parziali oppure non mantenute. 
+Javascript invece ha pdfkit, una libreria che permette la creazione e manipolazione 
+di un PDF senza intermezzi. 
+\\ Il sistema non controlla la correttezza dei dati, ma vengono controllate l'assenza 
+dei campi necessari. Un titolo non può mancare, mentre è possibile che un campo 
+sia vuoto. 
+\\ La stampa ha una forma regolare, divisa per righe e colonne. Se i dati sono 
+disposti in maniera più arbitraria è necessario implementarlo. 
+\\ Non è previsto nel progetto altre stampe al interno del progetto corrente, ma 
+svilupparlo in modo da permettere liberamente di aggiungere altri tipi di stampa 
+senza difficoltà. 
+
+\subsection{Features}
+La lambda è una funzione assincrona che prende in input un evento e ritorna a 
+un JSON con eventuali informazioni o messaggi di errore. 
 
 \section{Sviluppo}
 \subsection{Workflow}
