@@ -15,8 +15,10 @@
 \contentsline {subsection}{\numberline {3.6}Features}{7}{subsection.3.6}%
 \contentsline {section}{\numberline {4}Implementazione}{8}{section.4}%
 \contentsline {subsection}{\numberline {4.1}Flusso di lavoro}{8}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}Creazione di un file e salvataggio su S3}{8}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Stampa di un file pdf da un json}{9}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.2}Creazione di un file e salvataggio su S3}{9}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Generazione di un pdf da un json}{9}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Test automatizzati}{10}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Rails}{10}{subsection.4.5}%
 \contentsline {section}{\numberline {5}Applicazione e performance}{10}{section.5}%
 \contentsline {section}{\numberline {6}Conclusione}{10}{section.6}%
 \contentsline {section}{\numberline {7}Appendici}{10}{section.7}%

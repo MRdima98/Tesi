@@ -228,32 +228,52 @@ La lambda ha un unica funzionalità, stampa e salvataggio della stampa.
 
 \section{Implementazione}
 \subsection{Flusso di lavoro}
-È stato deciso di lavorare con continua integrazione. In prima istanza creare 
-il 
+È stato deciso di lavorare con continua integrazione. 
+\\ In prima battuta creare una funzione in grado di generare un pdf e salvarlo 
+su S3. Testare ogni aspetto della funzione ed effettuare il deploy su AWS. 
+\\ Il secondo passaggio è integrare la funzionalità in rails, eliminando la vecchia 
+integrazione. 
+\\ Infine estendere questa implementazione a ogni stampa pdf sul server.
 
 \subsection{Creazione di un file e salvataggio su S3}
 La lamda è una funzione asincrona che viene eseguita ogni volta che riceve una
 chiamata https. Bisogna prima di tutto creare una connessione con il bucket di s3,
 una volta creata questa connessione si può salvare un file passando il filepath
-oppure uno stream di data e avremo salvato il file su S3
+oppure uno stream di data e avremo salvato il file su S3.
 
-\subsection{Stampa di un file pdf da un json}
-Le operazioni utili al mio scopo text per scrivere una stringa,
-stroke per disegnare una linea e infine è possibile manipolare colori e font.
-Inizialmente avevo deciso di programmare in maniera funzionale perché risultava
-una logica più semplice essendo un breve script, con l'aumentare della complessità
-e con il modo di esportare di javascript ho pensato che una classe fosse più adeguata.
-Quindi c'è un costruttore che definisce la grandezza del documento, questo mantiene
-la relazione di un foglio A4 (circa 1.41) in modo che stampa e visualizzazione sono
-sempre molto comodi. Dopo l'inizializzazione si inizia la scrittura dei blocchi.
-Ogni json potrebbe avere un header, body e table. Se uno dei 3 manca, non verrà
-scritto e gli altri si organizzeranno di conseguenza. Ogni metodo di scrittura
-controlla che non ci siano dati mancanti che possano nuocere alla stampa come ad
-esempio se manca un titolo non è una stampa valida, e ritornano 400. Se tutto va
-bene e la stampa va a buon fine, è possibile mandare l'oggetto con get document.
-Ogni possibile caso è testato con mocha, la connessione con AWS è mochata tramite
-aws-sdk e gran parte dei dati è generata casualmente tramite faker.
-Se tutto va a buon fine il programma ritorna 200 e il link del download.
+\subsection{Generazione di un pdf da un json}
+La libreria permette scrittura sul file, disegno elementare e manipolazione di 
+font, posizione e colore.
+Inizialmente appariva conveniente un approccio funzionale, ma vedendo il modo 
+particolare in cui viene esportato un file in nodejs e la complessità sempre 
+maggiore dei documenti, è stato deciso di creare una classe: PdfDocument. 
+\\
+Il costruttore va a definire la grandezza del documento in base alla tabella.
+Questa definisce la larghezza del documento e l'altezza viene calcolata di
+conseguenza (1.41 volte più grande, come un foglio A4).
+Il formato A4 è il default nel caso in cui la tabella manchi oppure la larghezza 
+sia minore di un A4. 
+Mantenendo queste proporzioni la visualizzazione e la stampa risultano molto 
+intuitivi. 
+Una volta definito il documento la classe chiama il metodo writeData. 
+Questo metodo controlla la presenza dei dati e richiama altri metodi di scrittura 
+se necessario.
+I metodi di scrittura controllano che non manchino dati vitali e se così non fosse 
+scrivono sul documento. 
+È possibile richiedere il documento tramite getDocument. 
+\\ 
+Il file è uno stream di dati e può essere spedito su S3. 
+
+\subsection{Test automatizzati}
+La libreria aws-sdk-dev permette di simulare qualsiasi tipo di connessione aws, 
+così da poter testare il collegamento con il bucket. 
+Tutti gli altri test sono diversi tipi di input json e la verifica della sicurezza.
+
+\subsection{Rails}
+Rails richiede un iniziale refactoring del metodo che ritorna la stampa. Prima di 
+tutto definisco che il ritorno default è pdf. Si può visualizzare oppure scaricare 
+direttamente. Si stabiliscono le connessioni e poi si crea il json. Vanno caricati 
+specifici dati quindi con un po' di metaprogramming diventa tutto più compatto. 
 
 \section{Applicazione e performance}
 \section{Conclusione}
