@@ -153,8 +153,8 @@ in input un json. Al suo interno abbiamo un token di autenticazione e il dominio
 di provenienza che vengono controllati dalla lambda. 
 \\ I contenuti invece sono divisi in sezioni per permettere dinamicità di stampa, 
 qualora uno dei blocchi fosse assente, semplicemente non verrà stampato. 
-\\ Nel caso in cui la stampa sia avvenuta correttamente la funzione ritorna 200 e 
-il link al file su S3. Se l'input della chiamata risulta errato, la funzione ritorna 
+\\ Nel caso in cui la stampa sia avvenuta correttamente la funzione ritorna 200 
+e il nome del file su S3. Se l'input della chiamata risulta errato, la funzione ritorna 
 400 e un messaggio che descrivere l'errore. Infine se avviene un errore di connessione 
 al bucket S3, la funzione ritornerà un errore 500.    
 \\ Il progetto deve permettere l'implementazione di stampe diverse da quelle di servizioGPS
@@ -171,8 +171,8 @@ l'operazione sia andato a buon fine, ritornerà un json in risposta.
 \\ AWS permette di creare variabili
 d'ambiente, evitando che siano scritti in chiaro nel codice. Una di queste variabili 
 è un token di autenticazione, esso viene confrontato con il token in input. 
-\\ La whitelist invece è una lista dei domini di Engim, questi vengono caricati in 
-una lista e confrontati con il dominio mittente. 
+\\ La whitelist contiene tutti i domini di Engim, questi vengono caricati in 
+una lista e confrontati con il mittente. 
 \\ Qualsiasi chiamata da dominio esterni oppure senza token verrà tratta come 
 "400 bad request". 
 
@@ -199,6 +199,8 @@ base64, se è assente non verrà scritto nulla.
 Durante l'esecuzione di una stampa vengono effettuale 3 connessioni dirette:
 Rails-lambda, lambda-bucket e Rails-bucket. È possibile che una di queste 3 
 fallisca, in quel caso Rails ritornerà errore 500.
+\\ Nel caso in cui sia un timeout rails tenterà la connessione a lambda fin tanto 
+che essa ritornerà una risposta corretta. 
 
 \subsection{Presupposti e dipendenze}
 La scelta del linguaggio è limitata da AWS, in particolare i 3 presi sotto considerazione 

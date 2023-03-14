@@ -12,7 +12,7 @@
 \contentsline {subsection}{\numberline {3.3}Correttezza dei dati}{6}{subsection.3.3}%
 \contentsline {subsection}{\numberline {3.4}Problemi interni del server}{7}{subsection.3.4}%
 \contentsline {subsection}{\numberline {3.5}Presupposti e dipendenze}{7}{subsection.3.5}%
-\contentsline {subsection}{\numberline {3.6}Features}{7}{subsection.3.6}%
+\contentsline {subsection}{\numberline {3.6}Features}{8}{subsection.3.6}%
 \contentsline {section}{\numberline {4}Implementazione}{8}{section.4}%
 \contentsline {subsection}{\numberline {4.1}Flusso di lavoro}{8}{subsection.4.1}%
 \contentsline {subsection}{\numberline {4.2}Creazione di un file e salvataggio su S3}{9}{subsection.4.2}%
