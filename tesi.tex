@@ -276,8 +276,28 @@ Rails richiede un iniziale refactoring del metodo che ritorna la stampa. Prima d
 tutto definisco che il ritorno default è pdf. Si può visualizzare oppure scaricare 
 direttamente. Si stabiliscono le connessioni e poi si crea il json. Vanno caricati 
 specifici dati quindi con un po' di metaprogramming diventa tutto più compatto. 
+Inoltre è necessario controllare altri metodi che si appoggiano sul metodo stampa. 
 
 \section{Applicazione e performance}
+\subsection{Frontend}
+Dal punto di vista del front non è cambiato nulla. Il metodi interessati sono 
+activity list, report, det_report, long_report. Questi possono essere usati 
+a mano da qui 
+[inserire foto]
+Oppure vengono chiamate una volta a settimana da questo metodo. 
+[inserire codice]
+\subsection{Performance}
+Si può chiaramente vedere che la lambda non ha nessun problema di performance.
+Essendo un super computer, anche se venissiro richiesti 10M di punti non ralentterebbe 
+in maniera eccessiva il servizio. 
+[grafico performance lambda]
+Naturalmente quindi abbiamo due colli di bottiglia, la connessione con lambda e 
+bucket e le query di rails. Le query di rails tendono a rallentare quando arriviamo 
+al ordine di 100k posizioni o attività. 
+[grafico query]
+La connessione al bucket è molto affidabile, la connessione a lambda può richiedere 
+alcuni secondi per un cold start e altri tempo aggiuntivo quando fallisce la richiesta, 
+rails tenterà la funzione fin tanto che avrà un risultato corretto. 
 \section{Conclusione}
 \section{Appendici}
 \section{Bibliografia}
