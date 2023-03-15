@@ -48,6 +48,10 @@
 \addtocounter{page}{0}
 
 \section{Introduzione}
+Il gestionale di engim permette di archiviare contenuti sensibili e utili per il 
+lavoro di un azienda. Questo è un servizio vitale ma non ha la preccedenza assoluta 
+su tutto il resto del lavoro, cosa succede se però questa operazione utilizzi 
+tutte le risorse di un servizio 
 \section{Engim Srl}
 \subsection{L'azienda}
 Engim è una società che si occupa di creare soluzioni tecnologiche in ambito 
@@ -280,21 +284,19 @@ Inoltre è necessario controllare altri metodi che si appoggiano sul metodo stam
 
 \section{Applicazione e performance}
 \subsection{Frontend}
-Dal punto di vista del front non è cambiato nulla. Il metodi interessati sono 
-activity list, report, det_report, long_report. Questi possono essere usati 
-a mano da qui 
-[inserire foto]
-Oppure vengono chiamate una volta a settimana da questo metodo. 
-[inserire codice]
+Dal punto di vista del front non è cambiato nulla. Il metodi interessati sono
+stampa attività 
+
+stampa report diversi 
+\subsection{Backend}
+
 \subsection{Performance}
 Si può chiaramente vedere che la lambda non ha nessun problema di performance.
 Essendo un super computer, anche se venissiro richiesti 10M di punti non ralentterebbe 
 in maniera eccessiva il servizio. 
-[grafico performance lambda]
 Naturalmente quindi abbiamo due colli di bottiglia, la connessione con lambda e 
 bucket e le query di rails. Le query di rails tendono a rallentare quando arriviamo 
 al ordine di 100k posizioni o attività. 
-[grafico query]
 La connessione al bucket è molto affidabile, la connessione a lambda può richiedere 
 alcuni secondi per un cold start e altri tempo aggiuntivo quando fallisce la richiesta, 
 rails tenterà la funzione fin tanto che avrà un risultato corretto. 
