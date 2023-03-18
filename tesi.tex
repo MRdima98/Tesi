@@ -47,11 +47,45 @@
 \pagenumbering{arabic}
 \addtocounter{page}{0}
 
-\section{Introduzione}
-Il gestionale di engim permette di archiviare contenuti sensibili e utili per il 
-lavoro di un azienda. Questo è un servizio vitale ma non ha la preccedenza assoluta 
-su tutto il resto del lavoro, cosa succede se però questa operazione utilizzi 
-tutte le risorse di un servizio 
+
+\section*{Introduzione}
+\addcontentsline{toc}{section}{Introduzione}
+Un software gestionale è un sistema creato per aiutare un'azienda a organizzare 
+e gestire il lavoro.
+Engim offre la possibilità di monitorare le mansioni di un lavoratore e garantire 
+la sua sicurezza tramite  ServizioGPS e TwiceTouch, i due prodotti di punta dell'azienda. 
+In particolare, servizioGPS salva il percorso di una macchina lavoratrice e 
+permette di calcolare il contributo dovuto. Ogni via attraversata viene salvata, 
+ogni 5 secondi viene salvata una coordinata GPS.
+\\ Nell'affrontare una grande quantità di dati, diventa importante
+ disporre di un metodo affidabile e intuitivo per l'archiviazione degli stessi.
+Un modo comune per salvare informazioni è tramite un file exel o pdf.
+I file PDF sono semplici da usare, da interpretare e sono estremamente diffusi 
+rendendoli perfetti per un cliente senza capacità tecniche. 
+Un servizio simile può essere parte integrale del software in quanto effettivamente 
+è un estensione dei servizi offerti. 
+Questo è vero fin tanto che richiede minime risorse e tempo di calcolo.
+\\ Cosa succede quando un servizio secondario, importante per i clienti ma non 
+abbastanza da giustificare un grosso impegno da parte del server, pesa gravemente 
+sul software? 
+È il problema che sta affrontando Engim; il servizio di conversione da dati 
+a PDf richiede troppe risorse per periodi prolungati rendendo difficile la user 
+esperienze ma soprattutto sovraccarica il server.
+Intuitivamente si potrebbe migliorare la situazione attuale, andando a riscrivere 
+il codice incriminato.
+Questa soluzione però risolve solo il problema in termini di tempo e non di 
+risorse, resta comunque un processo potenzialmente gravoso sul server. 
+Un altro possibile approccio sarebbe quello di scaricare la responsabilità del 
+calcolo su qualcun altro.
+\\ È possibile effettivamente astrarre il processo di conversione, portarlo su 
+un servizio di terze parti migliorando performance e risparmiando risorse.
+
+\thispagestyle{empty}
+\newpage 
+\thispagestyle{empty}
+\
+\newpage
+
 \section{Engim Srl}
 \subsection{L'azienda}
 Engim è una società che si occupa di creare soluzioni tecnologiche in ambito 
@@ -84,7 +118,7 @@ Le tecnologie usate per servizioGPS sono le seguenti:
   \item Python come back end di supporto
   \item Java per il prodotti app 
 \end{itemize}
-\begin{figure}[h]
+\begin{figure}[H]
 \includegraphics[scale = 0.6]{infrastructure.png}
 \caption{Architettura}
 \label{fig:mesh1}
@@ -157,10 +191,12 @@ in input un json. Al suo interno abbiamo un token di autenticazione e il dominio
 di provenienza che vengono controllati dalla lambda. 
 \\ I contenuti invece sono divisi in sezioni per permettere dinamicità di stampa, 
 qualora uno dei blocchi fosse assente, semplicemente non verrà stampato. 
-\\ Nel caso in cui la stampa sia avvenuta correttamente la funzione ritorna 200 
+\\ Nel caso in cui la stampa sia avvenuta correttamente la funzione ritorna 
+"200 OK"
 e il nome del file su S3. Se l'input della chiamata risulta errato, la funzione ritorna 
-400 e un messaggio che descrivere l'errore. Infine se avviene un errore di connessione 
-al bucket S3, la funzione ritornerà un errore 500.    
+"400 BAD REQUEST"
+e un messaggio che descrivere l'errore. Infine se avviene un errore di connessione 
+al bucket S3, la funzione ritornerà un errore "500 INTERNAL ERROR".    
 \\ Il progetto deve permettere l'implementazione di stampe diverse da quelle di servizioGPS
 e di altri file di output come kml e xls. 
 
@@ -170,65 +206,93 @@ e di altri file di output come kml e xls.
 L'autenticazione avviene a livello di codice, sia sul server che sul microservizio.
 \\ La gemma aws-sdk-lambda permette di stabile una connessione diretta con la 
 lambda. È sufficiente fornire: nome della funzione, regione, credenziali e payload. 
-Le credenziali sono salvati dentro un file crittografato yaml. Nel caso in cui 
-l'operazione sia andato a buon fine, ritornerà un json in risposta.
+Le credenziali sono salvati dentro un file crittografato yaml. 
+Un ulteriore livello di sicurezza è integrato nella funzione: token è whitelist. 
 \\ AWS permette di creare variabili
 d'ambiente, evitando che siano scritti in chiaro nel codice. Una di queste variabili 
 è un token di autenticazione, esso viene confrontato con il token in input. 
 \\ La whitelist contiene tutti i domini di Engim, questi vengono caricati in 
 una lista e confrontati con il mittente. 
+Nel caso in cui 
+l'operazione sia andato a buon fine, ritornerà un json in risposta.
 \\ Qualsiasi chiamata da dominio esterni oppure senza token verrà tratta come 
 "400 bad request". 
 
 \subsection{Correttezza dei dati}
-Esistono 3 blocchi principali: header, body, table.
+Esistono 3 blocchi principali: "header", "body", "table".
 Fin tanto che almeno uno dei 3 è presente, la stampa risulta valida.
-Facoltativamente è possibile includere il blocco media, che contiene 
-eventuali immagini in base64. Questo blocco aiuta ad evitare la spedizione duplicata 
-di immagini.
+Facoltativamente è possibile includere il blocco "media", che contiene 
+eventuali immagini in "base64". Questo blocco evita la ripetizione delle immagini, 
+alleggerendo l'invio dei dati.
 \\ Il header può contenere fino a 2 loghi, però deve necessariamente avere 
-un titolo e un heading. Il heading contiene: dominio di provenienza, nome utente 
-e data di oggi.
+un titolo e una intestazione. 
+Uno dei due loghi è sempre quello aziendale, mentre l'altro può essere il logo 
+del azienda oppure del comune con cui lavoriamo.
+L'intestazione contiene: dominio di provenienza, nome utente e data di oggi.
 \\ Il body può contenere un numero arbitrario di blocchi. Ogni blocco è racchiuso 
 in un rettangolo e a sua volta contiene una serie di titoli con i loro dati. 
 È valida l'assenza di un dato, ma invalida l'assenza di un titolo. 
 \\ Il table contiene una serie di titoli e una serie di righe. Non c'è limite 
 al numero di righe che può contenere.
 Anche in questo caso non può mancare un titolo ma un dato può essere vuoto. 
-\\ Tra i tipo di dato è possibile avere un immagine, l'immagine viene spedita come 
-base64, se è assente non verrà scritto nulla. 
+\\ Tra i tipo di dato,di una tabella, 
+è possibile avere un immagine, l'immagine viene spedita come 
+base64, se è assente non verrà scritto nulla. Onde evitare la duplicazione 
+eccessiva di immagini, siccome una tabella potenzialmente contiene un numero 
+illimitato di dati, le immagini sono salvate nel blocco media in singola coppia. 
 \\ Il programma presume che i dati siano corretti, controlla solo la loro presenza.
+La funzione anche presume che ogni dato sia una stringa, questo evita conversioni 
+e permette di stampare qualsiasi dato a prescindere dalla provenienza.
 
 \subsection{Problemi interni del server}
-Durante l'esecuzione di una stampa vengono effettuale 3 connessioni dirette:
-Rails-lambda, lambda-bucket e Rails-bucket. È possibile che una di queste 3 
-fallisca, in quel caso Rails ritornerà errore 500.
-\\ Nel caso in cui sia un timeout rails tenterà la connessione a lambda fin tanto 
-che essa ritornerà una risposta corretta. 
+Durante l'esecuzione vengono effettuate delle connessioni dirette tra i servizi. 
+In un primo momento Rails si collega con la lambda, questa connessione potrebbe 
+essere soggetta a timeout. 
+\\ Lambda a sua volta crea un canale con il bucket, per poter 
+effettuare il caricamento del file, qualsiasi tipo di errore viene catturato da javascript.
+Nel caso in cui il file venga salvato correttamente,
+la lambda restituisce la chiave del file, ovvero il suo nome. 
+\\ Infine Rails si collega al bucket e cerca il link per aprire o scaricare il file 
+direttamente da bucket.
+Questa connessione può sembrare superflua, ma aggiunge 
+un livello di sicurezza ulteriore senza aumenti degni di nota sul costo temporale. 
+
 
 \subsection{Presupposti e dipendenze}
-La scelta del linguaggio è limitata da AWS, in particolare i 3 presi sotto considerazione 
-sono state ruby, python e javascript. 
-Le librerie di ruby prevedono il parsing di HTML quindi non risolvono i problemi 
-preesistenti. 
-Python offre molte librerie, ma con funzionalità parziali oppure non mantenute. 
-Javascript invece ha pdfkit, una libreria che permette la creazione e manipolazione 
-di un PDF senza intermezzi. 
+Siccome AWS mette a disposizione l'infrastruttura c'è una scelta limitata dei 
+linguaggi di programmazione.
+Nella lista sono presenti i più popolari al momento,
+in particolare sono stati presi sotto esame python, ruby e javascript.
+\\ Ruby ha numerose librerie che permettono la scrittura dei PDF che purtroppo
+prevedono il parsing di un HTML.
+Questa operazione è molto vantaggiosa per lo sviluppo ma non particolarmente 
+per l'efficienza.
+Ogni conversione richiede un istanza di chrome da cui convertire il file,
+creando una serie di processi non necessari.  
+\\ Python offre molteplici librerie, ognuna con diverse funzionalità. Non è 
+sufficiente avere una sola per le operazione e inoltre 
+molte di queste librerie non sono mantenute in maniera costante
+\\ Javascript invece ha "pdfkit", una libreria che permette la creazione e manipolazione 
+di un PDF senza intermezzi. È molto popolare, open source con una comunità 
+attiva, oltre ad avere una documentazione breve e chiara.
 \\ La stampa ha una forma regolare, divisa per righe e colonne. Se i dati sono 
 disposti in maniera più arbitraria è necessaria un implementazione diversa. 
-\\ Non è richiesto la stampa in altri formati di file, ma è necessario lasciare 
-libertà di aggiunta di formati in futuro.
+Non è richiesto la stampa in altri formati di file, ma è necessario lasciare 
+la libertà di aggiungere diversi formati in futuro.
 
 \subsection{Features}
 La lambda ha un unica funzionalità, stampa e salvataggio della stampa.
-\\ È possibile effettuare diverse stampe che hanno disposizioni simili.
-\\ È possibile stampare immagini. 
-
 \begin{figure}[H]
 \includegraphics[scale = 0.6]{useCases.png}
 \caption{Casi d'uso}
 \label{fig:mesh2}
 \end{figure}
+Ogni stampa deve seguire seguire lo schema a blocchi definito, non è possibile 
+ad esempio affiancare un immagine in una tabella. 
+Qualsiasi implementazione che non segua lo standard va aggiunta alla funzione.
+\\ È possibile stampare immagini. Queste devono essere prese in input siccome non 
+esiste una memoria permanente per la funzione.
+
 
 
 
@@ -237,15 +301,17 @@ La lambda ha un unica funzionalità, stampa e salvataggio della stampa.
 È stato deciso di lavorare con continua integrazione. 
 \\ In prima battuta creare una funzione in grado di generare un pdf e salvarlo 
 su S3. Testare ogni aspetto della funzione ed effettuare il deploy su AWS. 
-\\ Il secondo passaggio è integrare la funzionalità in rails, eliminando la vecchia 
-integrazione. 
-\\ Infine estendere questa implementazione a ogni stampa pdf sul server.
+\\ Successivamente integrare la funzionalità in rails, eliminando la vecchia 
+funzione. Assicurarsi che la stampa esegue correttamente ed in tempi ragionevoli.
 
 \subsection{Creazione di un file e salvataggio su S3}
-La lamda è una funzione asincrona che viene eseguita ogni volta che riceve una
-chiamata https. Bisogna prima di tutto creare una connessione con il bucket di s3,
-una volta creata questa connessione si può salvare un file passando il filepath
-oppure uno stream di data e avremo salvato il file su S3.
+È possibile interagire con un bucket S3 tramite due modi: connessione con link 
+creato da un utente autorizzato oppure connessione IAM. In questo particolare 
+caso è necessario stabile una connessione diretta tramite IAM. Una volta stabilita 
+è possibile accedere a una serie di metodi tra cui "upload()". Al termine del 
+caricamento il bucket ritorna un dizionario con una serie di informazioni, la 
+più importante è la chiave, che è il nome del file su S3. Nota importante, 
+non usare "key" perché è un valore vecchio per retrocompatibilità, bensi "Key". 
 
 \subsection{Generazione di un pdf da un json}
 La libreria permette scrittura sul file, disegno elementare e manipolazione di 
@@ -254,53 +320,163 @@ Inizialmente appariva conveniente un approccio funzionale, ma vedendo il modo
 particolare in cui viene esportato un file in nodejs e la complessità sempre 
 maggiore dei documenti, è stato deciso di creare una classe: PdfDocument. 
 \\
-Il costruttore va a definire la grandezza del documento in base alla tabella.
+Il costruttore va a definire la grandezza del documento in base al blocco più 
+largo del file.
 Questa definisce la larghezza del documento e l'altezza viene calcolata di
 conseguenza (1.41 volte più grande, come un foglio A4).
-Il formato A4 è il default nel caso in cui la tabella manchi oppure la larghezza 
-sia minore di un A4. 
+Il formato default è A4, per evitare stampe troppo piccole.
 Mantenendo queste proporzioni la visualizzazione e la stampa risultano molto 
-intuitivi. 
-Una volta definito il documento la classe chiama il metodo writeData. 
+semplici.
+Una volta definito il documento la classe chiama il metodo "writeData()".
 Questo metodo controlla la presenza dei dati e richiama altri metodi di scrittura 
 se necessario.
 I metodi di scrittura controllano che non manchino dati vitali e se così non fosse 
 scrivono sul documento. 
-È possibile richiedere il documento tramite getDocument. 
-\\ 
-Il file è uno stream di dati e può essere spedito su S3. 
+È possibile richiedere il documento tramite "getDocument()". 
+\\ Il file è uno stream di dati e può essere spedito direttamente su S3. 
 
 \subsection{Test automatizzati}
-La libreria aws-sdk-dev permette di simulare qualsiasi tipo di connessione aws, 
-così da poter testare il collegamento con il bucket. 
-Tutti gli altri test sono diversi tipi di input json e la verifica della sicurezza.
+Si è deciso di effettuare del "unit testing" tramite la libreria mocha.
+Ogni singolo modulo è testato singolarmente con dati corretti ed errati. 
+Ogni input è generato casualmente grazie a "faker-js". 
+Infine le connessioni con AWS sono simulate tramite "aws-sdk-dev". 
 
-\subsection{Rails}
-Rails richiede un iniziale refactoring del metodo che ritorna la stampa. Prima di 
-tutto definisco che il ritorno default è pdf. Si può visualizzare oppure scaricare 
-direttamente. Si stabiliscono le connessioni e poi si crea il json. Vanno caricati 
-specifici dati quindi con un po' di metaprogramming diventa tutto più compatto. 
-Inoltre è necessario controllare altri metodi che si appoggiano sul metodo stampa. 
+\subsection{Ruby on Rails}
+Il metodo di stampa corrente ritorna una pagina HTML e richiede la stampa oppure 
+scarica la conversione di quella pagina. Innanzitutto è necessario cambiare il 
+ritorno da HTML a pdf e in seguito passare un valore alla chiamata per distinguere 
+la visualizzazione dallo scaricamento del file. 
+La prossima fase è caricare tutti i dati in un hash e trasformarlo in un JSON. 
+Ogni stampa ha disposizioni simili ma una conversione dei dati diversa, è quindi 
+necessario creare due distinte funzioni: una per le attività e una per la singola 
+attività
+\\ Una volta definito il json si può stabile una connessione diretta con la lambda e 
+chiamare il metodo interessato. Al termine della chiamata il metodo ritornerà la 
+chiave del file sul bucket e stabiliamo un ulteriore connessione al bucket per 
+visualizzare o scaricare il file. Il ritorno di questa richiesta è un json che 
+contiene una serie di link tra cui il url di download e il url di visualizzazione.
+Il motivo per cui questo non viene ritornato direttamente dalla lambda è per avere 
+un livello di sicurezza extra. 
 
 \section{Applicazione e performance}
-\subsection{Frontend}
-Dal punto di vista del front non è cambiato nulla. Il metodi interessati sono
-stampa attività 
+\subsection{Risultati}
+Non è stato necessario cambiare nessuna parte dell'interfaccia grafica. È possibile 
+stampare una lista di attività cliccando sulla stampante oppure una scaricarle 
+cliccando sul immagine alla sua destra.
+\begin{figure}[H]
+\includegraphics[width =\textwidth]{lista_attività.jpg}
+\caption{Lista di attività}
+\label{fig:mesh3}
+\end{figure}
+Di seguito è possibile vedere un esempio di stampa di attività. 
+\begin{figure}[H]
+\includegraphics[width =\textwidth]{report.png}
+\caption{Stampa del elenco attività}
+\label{fig:mesh4}
+\end{figure}
 
-stampa report diversi 
-\subsection{Backend}
+Alternativamente è possibile stampare i dettagli di un unica attività.
+\begin{figure}[H]
+\includegraphics[width =\textwidth]{singola_attività.png}
+\caption{Attività visualizzazione}
+\label{fig:mesh5}
+\end{figure}
+Esempio di stampa di un attività 
+\begin{figure}[H]
+\includegraphics[width =\textwidth]{report_attività.png}
+\caption{Stampa di una singola attività}
+\label{fig:mesh6}
+\end{figure}
 
 \subsection{Performance}
-Si può chiaramente vedere che la lambda non ha nessun problema di performance.
-Essendo un super computer, anche se venissiro richiesti 10M di punti non ralentterebbe 
-in maniera eccessiva il servizio. 
-Naturalmente quindi abbiamo due colli di bottiglia, la connessione con lambda e 
-bucket e le query di rails. Le query di rails tendono a rallentare quando arriviamo 
-al ordine di 100k posizioni o attività. 
-La connessione al bucket è molto affidabile, la connessione a lambda può richiedere 
-alcuni secondi per un cold start e altri tempo aggiuntivo quando fallisce la richiesta, 
-rails tenterà la funzione fin tanto che avrà un risultato corretto. 
-\section{Conclusione}
-\section{Appendici}
-\section{Bibliografia}
+Sono stati fatti test di performance sul elenco delle attività siccome è la 
+stampa più pesante, perché ha delle immagini.  
+\begin{figure}[H]
+\includegraphics[width =\textwidth]{performance.png}
+\caption{Performance}
+\label{fig:mesh6}
+\end{figure}
+Al aumentare delle attività aumenta in maniera quasi lineare il tempo. Questo 
+è dovuto al numero alto di cicli di scrittura.
+Oltre venti mila attività non è possibile effettuare una stampa perché 
+raggiungiamo il limite del buffer di aws. Se fosse necessario aumentare 
+la performance sarebbe sufficiente trasformare le immagini in icone vettoriali.
+Altre possibile ottimizzazione sarebbe definire a priori le misure del foglio e 
+salvarle come costanti. Tuttavia non è necessario perché sono tempi ragionevoli.
+\\ È più importante notare che il server usa risorse minime, in quanto deve 
+solo aspettare il ritorno della chiamata https, perciò il problema più grosso è 
+stato risolto il server non è a rischio di crash se c'è una stampa enorme.
+\\ La funzione precedente aveva una performance ottima per basse attività 
+ma quando superava i 10.000 aveva un alta possibilità di crash.
+
+
+\thispagestyle{empty}
+\newpage 
+
+\section*{Conclusione}
+\addcontentsline{toc}{section}{Conclusione}
+I microservizi sono un nuovo paradigma decisamente interessante, permettono 
+l'astrazione di logica scaricando il peso del calcolo su terze parti. 
+Il progetto aveva proprio l'intento di rendere più sicuro e più veloce questo 
+servizio. Questo però è solo una parte delle stampe PDF di servizioGPS, è 
+possibile esportare molta più logica. Inoltre sono presenti altri formati, che 
+se implementati separatamente possono essere integrati nella lambda. Al termine 
+del lavoro si potrebbe avere tutta la logica di stampa esterna al sito web. 
+\\ Bruv
+
+
+\thispagestyle{empty}
+\newpage 
+
+\section*{Bibliografia}
+\addcontentsline{toc}{section}{Bibliografia}
+
+\begin{thebibliography}{9}
+  \bibitem{link}
+  AWS Documentazione ufficiale.
+  \url{https://docs.aws.amazon.com/lambda/index.html}
+
+  \bibitem{link}
+  AWS Documentazione ufficiale.
+  \url{https://docs.aws.amazon.com/lambda/index.html}
+
+  \bibitem{link}
+  AWS Documentazione ufficiale.
+  \url{https://docs.aws.amazon.com/lambda/index.html}
+
+  \bibitem{link}
+  AWS Documentazione ufficiale.
+  \url{https://docs.aws.amazon.com/lambda/index.html}
+
+  \bibitem{link}
+  AWS Documentazione ufficiale.
+  \url{https://docs.aws.amazon.com/lambda/index.html}
+
+  \bibitem{link}
+  AWS Documentazione ufficiale.
+  \url{https://docs.aws.amazon.com/lambda/index.html}
+
+  \bibitem{link}
+  AWS Documentazione ufficiale.
+  \url{https://docs.aws.amazon.com/lambda/index.html}
+
+  \bibitem{link}
+  AWS Documentazione ufficiale.
+  \url{https://docs.aws.amazon.com/lambda/index.html}
+
+  \bibitem{link}
+  AWS Documentazione ufficiale.
+  \url{https://docs.aws.amazon.com/lambda/index.html}
+
+  \bibitem{link}
+  AWS Documentazione ufficiale.
+  \url{https://docs.aws.amazon.com/lambda/index.html}
+
+  \bibitem{link}
+  AWS Documentazione ufficiale.
+  \url{https://docs.aws.amazon.com/lambda/index.html}
+
+\end{thebibliography}
+
+
 \end{document}
