@@ -48,6 +48,7 @@
 \addtocounter{page}{0}
 
 
+\phantomsection
 \section*{Introduzione}
 \addcontentsline{toc}{section}{Introduzione}
 Un software gestionale è un sistema creato per aiutare un'azienda a organizzare 
@@ -59,7 +60,7 @@ permette di calcolare il contributo dovuto. Ogni via attraversata viene salvata,
 ogni 5 secondi viene salvata una coordinata GPS.
 \\ Nell'affrontare una grande quantità di dati, diventa importante
  disporre di un metodo affidabile e intuitivo per l'archiviazione degli stessi.
-Un modo comune per salvare informazioni è tramite un file exel o pdf.
+Un modo comune per salvare informazioni è tramite un file XLSX o PDF.
 I file PDF sono semplici da usare, da interpretare e sono estremamente diffusi 
 rendendoli perfetti per un cliente senza capacità tecniche. 
 Un servizio simile può essere parte integrale del software in quanto effettivamente 
@@ -187,7 +188,7 @@ altro prodotto Engim.
 Il progetto è una funzione lambda su AWS, ovvero un microservizio. La funzione 
 viene chiamata in maniera diretta tramite una gemma di ruby.
 Questa richiede le credenziali IAM per effettuare l'accesso alla lambda e prende 
-in input un json. Al suo interno abbiamo un token di autenticazione e il dominio 
+in input un JSON. Al suo interno abbiamo un token di autenticazione e il dominio 
 di provenienza che vengono controllati dalla lambda. 
 \\ I contenuti invece sono divisi in sezioni per permettere dinamicità di stampa, 
 qualora uno dei blocchi fosse assente, semplicemente non verrà stampato. 
@@ -195,28 +196,28 @@ qualora uno dei blocchi fosse assente, semplicemente non verrà stampato.
 "200 OK"
 e il nome del file su S3. Se l'input della chiamata risulta errato, la funzione ritorna 
 "400 BAD REQUEST"
-e un messaggio che descrivere l'errore. Infine se avviene un errore di connessione 
+e un messaggio che descrive l'errore. Infine se avviene un errore di connessione 
 al bucket S3, la funzione ritornerà un errore "500 INTERNAL ERROR".    
 \\ Il progetto deve permettere l'implementazione di stampe diverse da quelle di servizioGPS
-e di altri file di output come kml e xls. 
+e di altri file di output come KML e xls. 
 
 
 
 \subsection{Sicurezza}
 L'autenticazione avviene a livello di codice, sia sul server che sul microservizio.
-\\ La gemma aws-sdk-lambda permette di stabile una connessione diretta con la 
+\\ La gemma aws-sdk-lambda permette di stabilire una connessione diretta con la 
 lambda. È sufficiente fornire: nome della funzione, regione, credenziali e payload. 
 Le credenziali sono salvati dentro un file crittografato yaml. 
-Un ulteriore livello di sicurezza è integrato nella funzione: token è whitelist. 
-\\ AWS permette di creare variabili
-d'ambiente, evitando che siano scritti in chiaro nel codice. Una di queste variabili 
-è un token di autenticazione, esso viene confrontato con il token in input. 
+Un ulteriore livello di sicurezza è integrato nella funzione sotto forma 
+di token e whitelist. 
+\\ Questi valori sono salvati nel ambiente di AWS, per evitare di averli 
+scritti in chiaro nel codice. Il token è un lungo carattere alfanumerico.
 \\ La whitelist contiene tutti i domini di Engim, questi vengono caricati in 
 una lista e confrontati con il mittente. 
 Nel caso in cui 
-l'operazione sia andato a buon fine, ritornerà un json in risposta.
+l'operazione sia andato a buon fine, ritornerà un JSON in risposta.
 \\ Qualsiasi chiamata da dominio esterni oppure senza token verrà tratta come 
-"400 bad request". 
+"400 BAD REQUEST". 
 
 \subsection{Correttezza dei dati}
 Esistono 3 blocchi principali: "header", "body", "table".
@@ -226,17 +227,17 @@ eventuali immagini in "base64". Questo blocco evita la ripetizione delle immagin
 alleggerendo l'invio dei dati.
 \\ Il header può contenere fino a 2 loghi, però deve necessariamente avere 
 un titolo e una intestazione. 
-Uno dei due loghi è sempre quello aziendale, mentre l'altro può essere il logo 
-del azienda oppure del comune con cui lavoriamo.
-L'intestazione contiene: dominio di provenienza, nome utente e data di oggi.
-\\ Il body può contenere un numero arbitrario di blocchi. Ogni blocco è racchiuso 
-in un rettangolo e a sua volta contiene una serie di titoli con i loro dati. 
+Uno dei due loghi è sempre quello aziendale, mentre l'altro può essere una copia 
+del precedente oppure appartenere al cliente.
+L'intestazione racchiude: dominio di provenienza, nome utente e data di oggi.
+\\ Il body può avere un numero arbitrario di blocchi. Ogni blocco è racchiuso 
+in un rettangolo e anche esso ha una serie di titoli con i loro dati. 
 È valida l'assenza di un dato, ma invalida l'assenza di un titolo. 
-\\ Il table contiene una serie di titoli e una serie di righe. Non c'è limite 
+\\ Il table è composto da una serie di titoli e una serie di righe. Non c'è limite 
 al numero di righe che può contenere.
 Anche in questo caso non può mancare un titolo ma un dato può essere vuoto. 
-\\ Tra i tipo di dato,di una tabella, 
-è possibile avere un immagine, l'immagine viene spedita come 
+\\ Tra i tipo di dato, di una tabella, 
+è possibile avere un immagine che viene spedita in 
 base64, se è assente non verrà scritto nulla. Onde evitare la duplicazione 
 eccessiva di immagini, siccome una tabella potenzialmente contiene un numero 
 illimitato di dati, le immagini sono salvate nel blocco media in singola coppia. 
@@ -253,7 +254,7 @@ effettuare il caricamento del file, qualsiasi tipo di errore viene catturato da 
 Nel caso in cui il file venga salvato correttamente,
 la lambda restituisce la chiave del file, ovvero il suo nome. 
 \\ Infine Rails si collega al bucket e cerca il link per aprire o scaricare il file 
-direttamente da bucket.
+direttamente dal bucket.
 Questa connessione può sembrare superflua, ma aggiunge 
 un livello di sicurezza ulteriore senza aumenti degni di nota sul costo temporale. 
 
@@ -299,7 +300,7 @@ esiste una memoria permanente per la funzione.
 \section{Implementazione}
 \subsection{Flusso di lavoro}
 È stato deciso di lavorare con continua integrazione. 
-\\ In prima battuta creare una funzione in grado di generare un pdf e salvarlo 
+\\ In prima battuta creare una funzione in grado di generare un PDF e salvarlo 
 su S3. Testare ogni aspetto della funzione ed effettuare il deploy su AWS. 
 \\ Successivamente integrare la funzionalità in rails, eliminando la vecchia 
 funzione. Assicurarsi che la stampa esegue correttamente ed in tempi ragionevoli.
@@ -313,11 +314,11 @@ caricamento il bucket ritorna un dizionario con una serie di informazioni, la
 più importante è la chiave, che è il nome del file su S3. Nota importante, 
 non usare "key" perché è un valore vecchio per retrocompatibilità, bensi "Key". 
 
-\subsection{Generazione di un pdf da un json}
+\subsection{Generazione di un PDF da un JSON}
 La libreria permette scrittura sul file, disegno elementare e manipolazione di 
 font, posizione e colore.
 Inizialmente appariva conveniente un approccio funzionale, ma vedendo il modo 
-particolare in cui viene esportato un file in nodejs e la complessità sempre 
+particolare in cui viene esportato un file in "Nodejs" e la complessità sempre 
 maggiore dei documenti, è stato deciso di creare una classe: PdfDocument. 
 \\
 Il costruttore va a definire la grandezza del documento in base al blocco più 
@@ -328,7 +329,7 @@ Il formato default è A4, per evitare stampe troppo piccole.
 Mantenendo queste proporzioni la visualizzazione e la stampa risultano molto 
 semplici.
 Una volta definito il documento la classe chiama il metodo "writeData()".
-Questo metodo controlla la presenza dei dati e richiama altri metodi di scrittura 
+Questo controlla la presenza dei dati e richiama altri metodi di scrittura 
 se necessario.
 I metodi di scrittura controllano che non manchino dati vitali e se così non fosse 
 scrivono sul documento. 
@@ -344,16 +345,17 @@ Infine le connessioni con AWS sono simulate tramite "aws-sdk-dev".
 \subsection{Ruby on Rails}
 Il metodo di stampa corrente ritorna una pagina HTML e richiede la stampa oppure 
 scarica la conversione di quella pagina. Innanzitutto è necessario cambiare il 
-ritorno da HTML a pdf e in seguito passare un valore alla chiamata per distinguere 
+ritorno da HTML a PDF e in seguito passare un valore alla chiamata per distinguere 
 la visualizzazione dallo scaricamento del file. 
 La prossima fase è caricare tutti i dati in un hash e trasformarlo in un JSON. 
 Ogni stampa ha disposizioni simili ma una conversione dei dati diversa, è quindi 
 necessario creare due distinte funzioni: una per le attività e una per la singola 
 attività
-\\ Una volta definito il json si può stabile una connessione diretta con la lambda e 
-chiamare il metodo interessato. Al termine della chiamata il metodo ritornerà la 
-chiave del file sul bucket e stabiliamo un ulteriore connessione al bucket per 
-visualizzare o scaricare il file. Il ritorno di questa richiesta è un json che 
+\\ Una volta definito il JSON si può stabile una connessione diretta con la lambda e 
+chiamare il metodo interessato.
+Al termine della chiamata il metodo ritornerà il nome del file e stabiliamo un
+ulteriore connessione, stavolta col bucket, per visualizzare o scaricare il file.
+Il ritorno di questa richiesta è un JSON che
 contiene una serie di link tra cui il url di download e il url di visualizzazione.
 Il motivo per cui questo non viene ritornato direttamente dalla lambda è per avere 
 un livello di sicurezza extra. 
@@ -390,7 +392,7 @@ Esempio di stampa di un attività
 
 \subsection{Performance}
 Sono stati fatti test di performance sul elenco delle attività siccome è la 
-stampa più pesante, perché ha delle immagini.  
+stampa più impegnativa, perché contiene molte immagini.  
 \begin{figure}[H]
 \includegraphics[width =\textwidth]{performance.png}
 \caption{Performance}
@@ -399,83 +401,88 @@ stampa più pesante, perché ha delle immagini.
 Al aumentare delle attività aumenta in maniera quasi lineare il tempo. Questo 
 è dovuto al numero alto di cicli di scrittura.
 Oltre venti mila attività non è possibile effettuare una stampa perché 
-raggiungiamo il limite del buffer di aws. Se fosse necessario aumentare 
+raggiungiamo il limite del buffer di AWS. Se fosse necessario aumentare 
 la performance sarebbe sufficiente trasformare le immagini in icone vettoriali.
-Altre possibile ottimizzazione sarebbe definire a priori le misure del foglio e 
-salvarle come costanti. Tuttavia non è necessario perché sono tempi ragionevoli.
-\\ È più importante notare che il server usa risorse minime, in quanto deve 
-solo aspettare il ritorno della chiamata https, perciò il problema più grosso è 
-stato risolto il server non è a rischio di crash se c'è una stampa enorme.
-\\ La funzione precedente aveva una performance ottima per basse attività 
-ma quando superava i 10.000 aveva un alta possibilità di crash.
+\\ Altre possibile ottimizzazione potrebbero essere: definire a priori le 
+misure del foglio e salvarle come costanti oppure modificare il JSON per 
+semplificare la struttura dati. 
+Tuttavia non è necessario perché sono tempi ragionevoli.
+È più importante notare che il server usi risorse minime, in quanto deve 
+solo aspettare il ritorno della chiamata https. Questo era il fulcro del progetto, 
+permettere una migliore e più sicura navigazione alleggerendo il lavoro compiuto 
+dal software.
+\\ L'implementazione precedente aveva una performance ottima per un numero ridotto 
+di informazioni, 
+siccome non era legata a dei tempi fissi di connessioni. Allo stesso tempo al 
+crescere delle attività aumentava esponenzialmente il tempo e rendeva alto il 
+rischio di crash.
 
 
 \thispagestyle{empty}
 \newpage 
 
+\phantomsection
 \section*{Conclusione}
 \addcontentsline{toc}{section}{Conclusione}
-I microservizi sono un nuovo paradigma decisamente interessante, permettono 
-l'astrazione di logica scaricando il peso del calcolo su terze parti. 
-Il progetto aveva proprio l'intento di rendere più sicuro e più veloce questo 
-servizio. Questo però è solo una parte delle stampe PDF di servizioGPS, è 
-possibile esportare molta più logica. Inoltre sono presenti altri formati, che 
-se implementati separatamente possono essere integrati nella lambda. Al termine 
-del lavoro si potrebbe avere tutta la logica di stampa esterna al sito web. 
-\\ Bruv
-
+I microservizi offrono un nuovo paradigma di programmazione, uno dove è possibile 
+astrarre logica dal proprio software e eseguirla solo qual'ora fosse necessario. 
+È possibile condividere questa logica su diversi piattaforme, e permette una 
+scalabilità semplice e veloce.
+Naturalmente non è adatto a ogni situazione situazione. Una serie di operazioni 
+numerose o estremamente lunghe richiedono un servizio. 
+Nel caso studiato invece una lambda è estremamente vantaggiosa.
+\\ In primo luogo risolve il problema del sovraccarico del server. Migliorare la 
+logica e gli algoritmi sarebbe stato corretto ma non avrebbe alleggerito il carico 
+di lavoro. L'esportazione del servizio invece permette di mantenere massima 
+performance del sito siccome i calcoli vengono fatti altrove.
+\\ Il costo temporale non ha subito migliorie nei casi più semplici, ma cresce 
+in maniera lineare al aumentare della mole di lavoro. Questo è molto più importante, 
+perché ci garantisce usabilità anche nei casi più estremi, visto che non è 
+poco comune avere una grossa mole di dati. 
+\\ Il progetto si era concentrato sulle stampe più impegnative, siccome erano 
+quelle responsabile del impatto negativo sul software e siccome sono le più 
+comuni. Non sono però le uniche stampe presenti sul server. Esistono varie 
+informazioni da stampare che sono meno vitali e meno usate.
+È però corretto avere una logica unica per tutte e portarla su lambda. 
+\\ Inoltre non è possibile scaricare solo in formato PDF, bensì anche in XLSX e 
+KML. È possibile introdurre queste tipologie in futuro, naturalmente ognuno 
+dovrà avere una sua implementazione personale. 
+Cosicché ogni operazione di stampa è estratta dal server ed è in un 
+unico progetto centrale.
+Questo permetterebbe al Rails di concentrarsi esclusivamente sul esposizione
+dei dati ai clienti.
 
 \thispagestyle{empty}
 \newpage 
 
+\phantomsection
 \section*{Bibliografia}
 \addcontentsline{toc}{section}{Bibliografia}
 
 \begin{thebibliography}{9}
   \bibitem{link}
-  AWS Documentazione ufficiale.
+  AWS documentazione. 
   \url{https://docs.aws.amazon.com/lambda/index.html}
 
   \bibitem{link}
-  AWS Documentazione ufficiale.
-  \url{https://docs.aws.amazon.com/lambda/index.html}
+  Rails documentazione.
+  \url{https://api.rubyonrails.org/}
 
   \bibitem{link}
-  AWS Documentazione ufficiale.
-  \url{https://docs.aws.amazon.com/lambda/index.html}
+  Nodejs documentazione.
+  \url{https://nodejs.org/it/docs}
 
   \bibitem{link}
-  AWS Documentazione ufficiale.
-  \url{https://docs.aws.amazon.com/lambda/index.html}
+  Mozilla documentazione.
+  \url{https://developer.mozilla.org/en-US/}
 
   \bibitem{link}
-  AWS Documentazione ufficiale.
-  \url{https://docs.aws.amazon.com/lambda/index.html}
+  Pdf-kit documentazione.
+  \url{https://pdfkit.org/}
 
   \bibitem{link}
-  AWS Documentazione ufficiale.
-  \url{https://docs.aws.amazon.com/lambda/index.html}
-
-  \bibitem{link}
-  AWS Documentazione ufficiale.
-  \url{https://docs.aws.amazon.com/lambda/index.html}
-
-  \bibitem{link}
-  AWS Documentazione ufficiale.
-  \url{https://docs.aws.amazon.com/lambda/index.html}
-
-  \bibitem{link}
-  AWS Documentazione ufficiale.
-  \url{https://docs.aws.amazon.com/lambda/index.html}
-
-  \bibitem{link}
-  AWS Documentazione ufficiale.
-  \url{https://docs.aws.amazon.com/lambda/index.html}
-
-  \bibitem{link}
-  AWS Documentazione ufficiale.
-  \url{https://docs.aws.amazon.com/lambda/index.html}
-
+  Microservizi wiki.
+  \url{https://en.wikipedia.org/wiki/Microservices}
 \end{thebibliography}
 
 
