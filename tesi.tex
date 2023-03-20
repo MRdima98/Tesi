@@ -71,13 +71,12 @@ abbastanza da giustificare un grosso impegno da parte del server, pesa gravement
 sul software? 
 È il problema che sta affrontando Engim; il servizio di conversione da dati 
 a PDf richiede troppe risorse per periodi prolungati rendendo difficile la user 
-esperienze ma soprattutto sovraccarica il server.
+esperienze ma soprattutto sovraccaricando il server.
 Intuitivamente si potrebbe migliorare la situazione attuale, andando a riscrivere 
 il codice incriminato.
 Questa soluzione però risolve solo il problema in termini di tempo e non di 
-risorse, resta comunque un processo potenzialmente gravoso sul server. 
-Un altro possibile approccio sarebbe quello di scaricare la responsabilità del 
-calcolo su qualcun altro.
+risorse, resta comunque un processo potenzialmente gravoso sulla macchina. 
+Un altro possibile approccio sarebbe quello di scaricare delegare il calcolo.
 \\ È possibile effettivamente astrarre il processo di conversione, portarlo su 
 un servizio di terze parti migliorando performance e risparmiando risorse.
 
@@ -165,7 +164,7 @@ o necessitato, sotto forma di pdf oppure xls.
 Le informazioni più importanti sono l'elenco e le specifiche di tutte le "attività". 
 Un'attività contiente una serie di dati, tra cui: coordinate
 gps, costi di lavoro, tempo di lavoro e altro.  
-Al momento il servizio è implementato da Rails tramite una gemma di ruby. 
+Al momento il servizio è implementato da Rails tramite una libreria di ruby. 
 Il sistema attuale crea un istanza di chrome, l'istanza contiene un HTML
 che si desidera convertire in pdf e infine avviene il parsing del documento.
 \\ Questo ha una serie di gravi problemi:
@@ -186,7 +185,7 @@ altro prodotto Engim.
 \section{Requisiti del progetto}
 \subsection{Descrizione}
 Il progetto è una funzione lambda su AWS, ovvero un microservizio. La funzione 
-viene chiamata in maniera diretta tramite una gemma di ruby.
+viene chiamata in maniera diretta tramite una libreria di ruby.
 Questa richiede le credenziali IAM per effettuare l'accesso alla lambda e prende 
 in input un JSON. Al suo interno abbiamo un token di autenticazione e il dominio 
 di provenienza che vengono controllati dalla lambda. 
@@ -199,13 +198,13 @@ e il nome del file su S3. Se l'input della chiamata risulta errato, la funzione 
 e un messaggio che descrive l'errore. Infine se avviene un errore di connessione 
 al bucket S3, la funzione ritornerà un errore "500 INTERNAL ERROR".    
 \\ Il progetto deve permettere l'implementazione di stampe diverse da quelle di servizioGPS
-e di altri file di output come KML e xls. 
+e di altri file di output come KML e XLSX. 
 
 
 
 \subsection{Sicurezza}
 L'autenticazione avviene a livello di codice, sia sul server che sul microservizio.
-\\ La gemma aws-sdk-lambda permette di stabilire una connessione diretta con la 
+\\ La libreria "aws-sdk-lambda" permette di stabilire una connessione diretta con la 
 lambda. È sufficiente fornire: nome della funzione, regione, credenziali e payload. 
 Le credenziali sono salvati dentro un file crittografato yaml. 
 Un ulteriore livello di sicurezza è integrato nella funzione sotto forma 
@@ -223,8 +222,7 @@ l'operazione sia andato a buon fine, ritornerà un JSON in risposta.
 Esistono 3 blocchi principali: "header", "body", "table".
 Fin tanto che almeno uno dei 3 è presente, la stampa risulta valida.
 Facoltativamente è possibile includere il blocco "media", che contiene 
-eventuali immagini in "base64". Questo blocco evita la ripetizione delle immagini, 
-alleggerendo l'invio dei dati.
+eventuali immagini in "base64". 
 \\ Il header può contenere fino a 2 loghi, però deve necessariamente avere 
 un titolo e una intestazione. 
 Uno dei due loghi è sempre quello aziendale, mentre l'altro può essere una copia 
@@ -271,7 +269,7 @@ per l'efficienza.
 Ogni conversione richiede un istanza di chrome da cui convertire il file,
 creando una serie di processi non necessari.  
 \\ Python offre molteplici librerie, ognuna con diverse funzionalità. Non è 
-sufficiente avere una sola per le operazione e inoltre 
+sufficiente usarne sol una per le operazione desiderate e inoltre 
 molte di queste librerie non sono mantenute in maniera costante
 \\ Javascript invece ha "pdfkit", una libreria che permette la creazione e manipolazione 
 di un PDF senza intermezzi. È molto popolare, open source con una comunità 
