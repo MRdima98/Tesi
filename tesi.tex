@@ -181,6 +181,42 @@ importanti sono il risparmio di risorse del server, che evita di gravare sulle
 operazioni più critiche, e la possibilità di usare il microservizio per qualsiasi 
 altro prodotto Engim.
 
+\section{Cloud computing}
+\subsection{Introduzione}
+Con cloud computing si intende una serie di servizi, di solito di database 
+ma anche di calcolo, on demand e senza che l'utente li gestisca. 
+Il cloud computing ha il vantaggio di ridurre i costi iniziali, avere un sistema 
+che si adatta alle esigenze e permette una migliore performance e un rende più 
+facile il mantenimento e sviluppo.  
+
+\subsection{AWS}
+Uno dei più grandi distributori di cloud computing è aws. Aws offre una vasta 
+categoria di servizi online dal server tradizionale ai singoli servizi. 
+In particolare engim usa: EBS lamba e bucket. 
+
+\subsection{EBS}
+EBS è un serve quasi tradizionale, si può fare il 95\% di quello che faresti di 
+norma ma con piccole differeze.Questo server non ha una memoria solida, perché 
+è una macchina diversa ad ogni avio. Quindi serve impostare un bucket che salva 
+tutti i dati fisici. 
+Questo server scala automaticamente, quando la richiesta aumenta il server si 
+potenzia da solo.
+Questo server è raggiungibile solo tramite eb, che è l'equivalente di ssh 
+ma per amazon. I costi sono più alti ma allo stesso tempo da molti vantaggi
+
+\subsection{Bucket}
+Molto simile al concetto di google drive ma per programmatori. Ti permette di 
+salvare file fine. Questi file possono essere visualizzati tramite accesso 
+manuale oppure si può creare un link temporaneo per poterci accedere. Bisogna 
+stabile una connessione diretta IAM per poterli usare. 
+
+\subsection{Microservizi}
+I microservizi sono funzioni che vivono per il tempo di esecuzione e muiono al 
+termine. Non hanno memoria fissa, ma solo memoria temporanea a tempo di 
+esecuzione. Si può scegliere quanta memoria usa e in base alla ram scala 
+la cpu. Prende in input un JSON, che viene caricato come evento. Una volta che
+che ha gestito la richiesta oppure andato in timeout allora ritorna un JSON a 
+sua volta. 
 
 \section{Requisiti del progetto}
 \subsection{Descrizione}
@@ -481,6 +517,11 @@ dei dati ai clienti.
   \bibitem{link}
   Microservizi wiki.
   \url{https://en.wikipedia.org/wiki/Microservices}
+
+
+  \bibitem{link}
+  Cloud computing wiki.
+  \url{https://en.wikipedia.org/wiki/Cloud_computing}
 \end{thebibliography}
 
 
