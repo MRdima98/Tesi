@@ -183,40 +183,56 @@ altro prodotto Engim.
 
 \section{Cloud computing}
 \subsection{Introduzione}
-Con cloud computing si intende una serie di servizi, di solito di database 
-ma anche di calcolo, on demand e senza che l'utente li gestisca. 
-Il cloud computing ha il vantaggio di ridurre i costi iniziali, avere un sistema 
-che si adatta alle esigenze e permette una migliore performance e un rende più 
-facile il mantenimento e sviluppo.  
+Il cloud computing è una serie di servizi on-demand, generalmente di archiviazione 
+e potenza di calcola, senza essere gestita direttamente dal utente. 
+Questo paradigma utilizza un modello pay-as-you-go, che può aiutare a risparmiare 
+soldi ma anche potrebbe portare a spesa inaspettate. 
+Le grande aziende amano non dover gestire l'infrastruttura, che si nota dal fatto 
+che nel 2023 il cloud comuning vale 706 miliardi e ci si aspetta che ne valga 
+1.8 trilliarddi entro il 2025.
+\\ L'idea però della condivisione delle risorse nasce già dal 1960, tramite il 
+remote job entry, ovvero condividere tempo di calcolo tramite la richiesta 
+di un job a un mainframe. 
+Più tardi nel 1990 le aziende di telecomunicazioni sono passate da connesioni 
+point-to-point che avevano la stessa qualità ma un costo nettamente inferiorie.
+Il risparmio era dovuto al fatto che le risorse venivano gestite in base 
+al bisogno del utente. 
+\\ Il pioniero del cloud computing come lo conosciamo oggi è stato Amazon che 
+nel 2002 Amazon Web Services.
 
 \subsection{AWS}
-Uno dei più grandi distributori di cloud computing è aws. Aws offre una vasta 
-categoria di servizi online dal server tradizionale ai singoli servizi. 
-In particolare engim usa: EBS lamba e bucket. 
-
-\subsection{EBS}
-EBS è un serve quasi tradizionale, si può fare il 95\% di quello che faresti di 
-norma ma con piccole differeze.Questo server non ha una memoria solida, perché 
-è una macchina diversa ad ogni avio. Quindi serve impostare un bucket che salva 
-tutti i dati fisici. 
-Questo server scala automaticamente, quando la richiesta aumenta il server si 
-potenzia da solo.
-Questo server è raggiungibile solo tramite eb, che è l'equivalente di ssh 
-ma per amazon. I costi sono più alti ma allo stesso tempo da molti vantaggi
-
-\subsection{Bucket}
-Molto simile al concetto di google drive ma per programmatori. Ti permette di 
-salvare file fine. Questi file possono essere visualizzati tramite accesso 
-manuale oppure si può creare un link temporaneo per poterci accedere. Bisogna 
-stabile una connessione diretta IAM per poterli usare. 
+Amazon Web Services è una susidiaria di Amazon che offre servizi di cloud 
+computing e APIs per individui, aziende e governi con un modello di paga as-you-go.
+Un servizio molto popolare è l'autoscaling, ovvero un server capace di aumentare 
+di potenza quando ha bisogno di più potenza senza ausiglio umano. 
+Uno dei serivzi più importanti di amazon è Amazon Elastic Compute Clound (EC2), 
+un cluster di computer usabili tramite REST API, CLI o AWS console. Questi 
+computer simulano in tutto e per tutto un server tradizionale, ma non hanno 
+un unità di memoria. 
+È quindi necessario usare un servizio di storage, sia per i dati testuali 
+quindi un database sia per i dati multimediali. 
+\\ Amazon aurora se fosse necessario avere un servizio di database compatibile 
+con mysql. 
+\\ Amazon Dynamo DB, se service un database caching. 
+\\ Amazon S3 per archiviazione di dati multimeddiali.
+Ma è anche possibile anche dividere la logica in molteplici parti, tramite un 
+architettura a microservizi
 
 \subsection{Microservizi}
-I microservizi sono funzioni che vivono per il tempo di esecuzione e muiono al 
-termine. Non hanno memoria fissa, ma solo memoria temporanea a tempo di 
-esecuzione. Si può scegliere quanta memoria usa e in base alla ram scala 
-la cpu. Prende in input un JSON, che viene caricato come evento. Una volta che
-che ha gestito la richiesta oppure andato in timeout allora ritorna un JSON a 
-sua volta. 
+Un architettura a microservizi indica una serie di componenti separati che 
+possono essere sviluppati e rilasciati in maniere indipendente. 
+I prodotti amazon che permetto queste semplicita sono amazon sns, per i notifiche
+amazons sqs per i messaggi e amazon lambda per il codice. 
+Particolarmente interessante è labmda, che è una funzione senza casa.
+È un codice che non è attivo per la maggior parte del tempo, quando riceve una 
+richiesta viene creato il suo ambiente e risponde al servizio. 
+Quindi permette di portare fuori dal server piccoli pezzi di logica specifica, 
+e eseguirli su un ambiente pulito e veloce. 
+È possibile quindi fare un implementazione veloce, modulare e evitare di 
+sovvracaricare il prodotto principale. 
+Rispetto a un modello tradizionale a servizi permette di risparmiare molta 
+potenza di calcolo e scala molto facilmente. 
+Nel caso però in cui si parla di processi naturalmente non è molto adatto.
 
 \section{Requisiti del progetto}
 \subsection{Descrizione}
@@ -499,6 +515,10 @@ dei dati ai clienti.
   \url{https://docs.aws.amazon.com/lambda/index.html}
 
   \bibitem{link}
+  Ruby documentazione.
+  \url{https://ruby-doc.org/}
+
+  \bibitem{link}
   Rails documentazione.
   \url{https://api.rubyonrails.org/}
 
@@ -518,10 +538,44 @@ dei dati ai clienti.
   Microservizi wiki.
   \url{https://en.wikipedia.org/wiki/Microservices}
 
-
   \bibitem{link}
   Cloud computing wiki.
   \url{https://en.wikipedia.org/wiki/Cloud_computing}
+
+
+  \bibitem{link}
+  Amazon Web Service wiki.
+  \url{https://en.wikipedia.org/wiki/Amazon_Web_Services}
+
+  \bibitem{link}
+  Remote job entry wiki.
+  \url{https://en.wikipedia.org/wiki/Remote_job_entry}
+
+  \bibitem{link}
+  Amazon aurora.
+  \url{https://aws.amazon.com/it/rds/aurora/?nc2=h_ql_prod_fs_aa}
+
+  \bibitem{link}
+  Amazon DynamoDB
+  \url{https://aws.amazon.com/it/dynamodb/?nc2=h_ql_prod_fs_ddb}
+
+  \bibitem{link}
+  Amazon S3.
+  \url{https://aws.amazon.com/it/s3o /?nc2=h_ql_prod_fs_s3}
+
+
+  \bibitem{link}
+  Amazon SNS.
+  \url{https://aws.amazon.com/it/sns/?nc2=h_ql_prod_ap_sns}
+
+  \bibitem{link}
+  Amazon SQS.
+  \url{https://aws.amazon.com/it/sqs/?nc2=h_ql_prod_ap_sqs}
+
+  \bibitem{link}
+  Amazon Lambda.
+  \url{https://aws.amazon.com/it/lambda/?nc2=h_ql_prod_cp_lbd}
+
 \end{thebibliography}
 
 
