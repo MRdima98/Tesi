@@ -124,37 +124,42 @@ Le tecnologie usate per servizioGPS sono le seguenti:
 \label{fig:mesh1}
 \end{figure}
 Ruby on Rails è usato per front-end e gran parte del backend di servizioGPS. 
-Il fetcher invece si dedica esclusivamente alla elaborazione di coordinate gps,
-per poter alleviare il carico di lavoro da Rails.
-Allo stesso scopo il servizio si appoggia su molteplici server.
-Uno di questi server è Amazon Web Services, un servizio di cloud computing 
-che oltre al noleggio di un server tradizionale rende possibile 
-anche un architettura a microservizi. 
+Qualsiasi necessità front end side è responsabilità di Rails, questo è dove 
+viene svolto la maggior parte della manutenzione siccome ha molte servizi diversi 
+ed è a stretto contatto con il cliente.
+Il Fetcher invece si dedica esclusivamente alla elaborazione di coordinate GPS. 
+Questo non si trova sullo stesso server di Rails, bensi sul suo privato, molto 
+più potente di quello di rails siccome è più vitale per il lavoro.
+Le operazioni che fa sono poche quindi richiede poca manutenzione. 
+Allo stesso scopo il servizio si appoggia su molteplici server, per quanto 
+potente possa essere il backend potrebbe essere comunque eccessivo dover 
+elaborare decine se non centinaia di migliaia di richieste contemporanee.
+Uno di questi server è EC2.
 
-\subsection{Microservizi}
-Un servizio è un processo che: esegue specifiche operazioni autonomamente, 
-risponde a eventi oppure rimane in attesa di una richiesta. 
-Nel caso in cui queste operazioni vengano svolte continuamente, il servizio è 
-estremamente vantaggioso. Non è però necessario che il servizio sia sempre in 
-esecuzione se viene usato in maniera discontinua o per brevi periodi di tempo. 
-I microservizi coprono questo ruolo, hanno le stesse caratteristiche di un servizio
-ma eseguono solo su richiesta. 
-\\ L'ambiente di esecuzione è completamente gestito da AWS, l'unica requisito per 
-creare un microservizio è caricare il proprio codice. In questo caso viene 
-noleggiato il tempo di calcolo invece che una macchiana fisica o virtuale.
-L'ambiente viene creato al momento della richiesta, esegue il codice e cessa di 
-esistere. 
-Quando il microservizio non è attivo non ci sono costi.
-\\ È bene tenere in mente due importanti caratteristiche dei microservizi:
-\begin{itemize}
-  \item L'ambiente non ha spazio di archiviazione, qualora sia necessario 
-  salvare un file, bisogna caricarlo in un servizio di clound computing come S3
-  \item Le tecnologie devono essere compatibili con l'infrastruttura sottostante,
-  il che limita le nostre scelte
-\end{itemize}
-Avendo in mente queste considerazioni, un caso d'uso adatto ai microservizi 
-è un servizio API che viene usato in maniera occasionale oppure per brevi periodi 
-fissi.
+% \subsection{Microservizi}
+% Un servizio è un processo che: esegue specifiche operazioni autonomamente, 
+% risponde a eventi oppure rimane in attesa di una richiesta. 
+% Nel caso in cui queste operazioni vengano svolte continuamente, il servizio è 
+% estremamente vantaggioso. Non è però necessario che il servizio sia sempre in 
+% esecuzione se viene usato in maniera discontinua o per brevi periodi di tempo. 
+% I microservizi coprono questo ruolo, hanno le stesse caratteristiche di un servizio
+% ma eseguono solo su richiesta. 
+% \\ L'ambiente di esecuzione è completamente gestito da AWS, l'unica requisito per 
+% creare un microservizio è caricare il proprio codice. In questo caso viene 
+% noleggiato il tempo di calcolo invece che una macchiana fisica o virtuale.
+% L'ambiente viene creato al momento della richiesta, esegue il codice e cessa di 
+% esistere. 
+% Quando il microservizio non è attivo non ci sono costi.
+% \\ È bene tenere in mente due importanti caratteristiche dei microservizi:
+% \begin{itemize}
+%   \item L'ambiente non ha spazio di archiviazione, qualora sia necessario 
+%   salvare un file, bisogna caricarlo in un servizio di clound computing come S3
+%   \item Le tecnologie devono essere compatibili con l'infrastruttura sottostante,
+%   il che limita le nostre scelte
+% \end{itemize}
+% Avendo in mente queste considerazioni, un caso d'uso adatto ai microservizi 
+% è un servizio API che viene usato in maniera occasionale oppure per brevi periodi 
+% fissi.
 
 \subsection{Sistema automatico di generazione di report}
 Engim esegue una manutenzione annuale di database, che consiste nell'archiviazione
@@ -175,10 +180,10 @@ che si desidera convertire in pdf e infine avviene il parsing del documento.
   aggravato dalle lunghe query dovute alla grande mole di dati 
   \item Il  parsing tende a essere poco affidabile
 \end{itemize}
-La natura del nostro problema rende molto facile la scelta di un microservizio.
+La natura del nostro problema sembra molto adatta per il cloud computing.
 L'operazione è ripetitiva, ben definita e usata per brevi periodi. Altri vantaggi 
 importanti sono il risparmio di risorse del server, che evita di gravare sulle 
-operazioni più critiche, e la possibilità di usare il microservizio per qualsiasi 
+operazioni più critiche, e la possibilità di usare il progetto per qualsiasi 
 altro prodotto Engim.
 
 \section{Cloud computing}
@@ -343,7 +348,16 @@ ad esempio affiancare un immagine in una tabella.
 Qualsiasi implementazione che non segua lo standard va aggiunta alla funzione.
 \\ È possibile stampare immagini. Queste devono essere prese in input siccome non 
 esiste una memoria permanente per la funzione.
-
+\\ Ogni file viene salvato su lambda, con il nome che è data e ora di oggi. 
+Lambda automaticamente crea cartelle divise per mese e per giorni. 
+Una volta che il file è stato salvato, rails può pescare il file e mostrarlo 
+o lasciare il download per l'utente.
+\\ Il bucket temporaneo viene svuotato periodicamente, se un dato serve per il 
+cliente verrà salvato sul bucket permanente. 
+Se invece il cliente non se lo tiene per conto suo verrà cancellato nel tempo.
+\\ Il motivo per la divisione dei bucket è per dividere la logica, io non voglio 
+che la mia lamda si occupi del organizzazione dei file, come non voglio 
+che rails metta le mani nel bucket di lambda, quindi si salva tutto nel suo.
 
 
 
@@ -412,22 +426,41 @@ un livello di sicurezza extra.
 
 \section{Applicazione e performance}
 \subsection{Risultati}
-Non è stato necessario cambiare nessuna parte dell'interfaccia grafica. È possibile 
-stampare una lista di attività cliccando sulla stampante oppure una scaricarle 
-cliccando sul immagine alla sua destra.
+Non è stato necessario cambiare nessuna parte dell'interfaccia grafica.
+Sul nav della sinistra sono presenti una serie di funzioni di servizioGPS, 
+l'unica di nostro interesse è Activities, e una serie di dati extra. 
+Il primo grosso blocco è un classico blocco di ricerca che permette 
+di trovare attività specifiche.
+È possibile stampare una lista di attività cliccando sulla stampante oppure una 
+scaricarle cliccando sul immagine alla sua destra, infine è possibile spedirle 
+per mail traite la lettera. 
+Il blocco sottostante è un riassunto delle attività, è compreso nella stampa. 
+Infine segue una tablle con tutti i dati importanti: id, stato, 
+prima posizione, ultima posizione, tipo, dispositivo, utente, 
+azienda e servizio in totale. 
 \begin{figure}[H]
 \includegraphics[width =\textwidth]{lista_attività.jpg}
 \caption{Lista di attività}
 \label{fig:mesh3}
 \end{figure}
 Di seguito è possibile vedere un esempio di stampa di attività. 
+In alto è possibile trovare il server di provenienza, con tanto di data e 
+azienda.
+A destra è scritta la versione del software della lambda. 
+Il header è il blocco con il titolo e il logo di serviziogps.
+Il body è il blocco che riassume il blocco visto nell'immagine precendente. 
+Il table è l'elenco di tutte le attività, che è identico a quello sul server, 
+esclusa l'ultima posizione.
+In questo caso sono presenti 6 attività, ma possono essere fino a 20 mila. 
 \begin{figure}[H]
 \includegraphics[width =\textwidth]{report.png}
 \caption{Stampa del elenco attività}
 \label{fig:mesh4}
 \end{figure}
 
-Alternativamente è possibile stampare i dettagli di un unica attività.
+Alternativamente è possibile stampare i dettagli di un unica attività. 
+In questa pagina è possibile vedere nel dettaglio il percorso fatto 
+dal dispositivo, i punti gps e la rapresentazione sulla cartina. 
 \begin{figure}[H]
 \includegraphics[width =\textwidth]{singola_attività.png}
 \caption{Attività visualizzazione}
@@ -439,6 +472,10 @@ Esempio di stampa di un attività
 \caption{Stampa di una singola attività}
 \label{fig:mesh6}
 \end{figure}
+In questo caso è presente solo una via ma è possibile averne potenzialmente 
+fino a 20 mila. Ogni singolo blocco fa parte del blocco in alto.  
+Oltre al logo di serviziogps è presente anche il logo del comune o azienda 
+se è presente. 
 
 \subsection{Performance}
 Sono stati fatti test di performance sul elenco delle attività siccome è la 
