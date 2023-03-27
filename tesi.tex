@@ -121,7 +121,6 @@ Le tecnologie usate per servizioGPS sono le seguenti:
 \begin{figure}[H]
 \includegraphics[scale = 0.6]{infrastructure.png}
 \caption{Architettura}
-\label{fig:mesh1}
 \end{figure}
 Ruby on Rails è usato per front-end e gran parte del backend di servizioGPS. 
 Qualsiasi necessità front end side è responsabilità di Rails, questo è dove 
@@ -189,25 +188,28 @@ altro prodotto Engim.
 \section{Cloud computing}
 \subsection{Introduzione}
 Il cloud computing è una serie di servizi on-demand, generalmente di archiviazione 
-e potenza di calcola, senza essere gestita direttamente dal utente. 
-Questo paradigma utilizza un modello pay-as-you-go, che può aiutare a risparmiare 
-soldi ma anche potrebbe portare a spesa inaspettate. 
-Le grande aziende amano non dover gestire l'infrastruttura, che si nota dal fatto 
-che nel 2023 il cloud comuning vale 706 miliardi e ci si aspetta che ne valga 
-1.8 trilliarddi entro il 2025.
-\\ L'idea però della condivisione delle risorse nasce già dal 1960, tramite il 
-remote job entry, ovvero condividere tempo di calcolo tramite la richiesta 
-di un job a un mainframe. 
-Più tardi nel 1990 le aziende di telecomunicazioni sono passate da connesioni 
-point-to-point che avevano la stessa qualità ma un costo nettamente inferiorie.
-Il risparmio era dovuto al fatto che le risorse venivano gestite in base 
-al bisogno del utente. 
-\\ Il pioniero del cloud computing come lo conosciamo oggi è stato Amazon che 
+e potenza di calcola, che non necessitano la gestione diretta da parte del utente. 
+Il servizio viene erogato con un modello pay-as-you-go, ovvero si paga l'effettivo 
+utilizzo invece che una quota fessa per un determinato periodo. 
+Questo approccio aiuta a risparmiare soldi generalmente ma può portare a spese 
+inaspettate, se il carico di lavoro dovesse subire un picco.
+È un rischio che le grandi aziende sono felici di correre, infatti nel 2023 il 
+mercato del cloud computing ha un valore di 706 miliardi. Si stima che entro il 
+2025 il numero crescerà fino a 1.8 bilioni. 
+\\ L'idea di condividere risorse non è nuova, bensì nasce nel 1960. Al tempo 
+un ufficio aveva un mainframe con varie postazioni. Ogni macchina poteva fare 
+una richiesta tramite un job e doveva aspettare l'esecuzione: remote job entry.
+Nel 1990 le aziende di telecomunicazioni sono passate da connessioni 
+point-to-point a virtual private network.
+La performance non ha subito alcun miglioramento ma adesso era possibile 
+decidere come impiegare le risorse. I clienti ricevevano banda in base 
+alla loro richiesta, questo risultava in un grosso risparmio per l'azienda.
+\\ Il pioniere del cloud computing come lo conosciamo oggi è stato Amazon che 
 nel 2002 Amazon Web Services.
 
 \subsection{AWS}
 Amazon Web Services è una susidiaria di Amazon che offre servizi di cloud 
-computing e APIs per individui, aziende e governi con un modello di paga as-you-go.
+computing e APIs per individui, aziende e governi.
 Un servizio molto popolare è l'autoscaling, ovvero un server capace di aumentare 
 di potenza quando ha bisogno di più potenza senza ausiglio umano. 
 Uno dei serivzi più importanti di amazon è Amazon Elastic Compute Clound (EC2), 
@@ -256,6 +258,11 @@ e un messaggio che descrive l'errore. Infine se avviene un errore di connessione
 al bucket S3, la funzione ritornerà un errore "500 INTERNAL ERROR".    
 \\ Il progetto deve permettere l'implementazione di stampe diverse da quelle di servizioGPS
 e di altri file di output come KML e XLSX. 
+
+\begin{figure}[H]
+\includegraphics[width =\textwidth]{realUseCases.png}
+\caption{Casi d'uso}
+\end{figure}
 
 
 
@@ -340,8 +347,7 @@ la libertà di aggiungere diversi formati in futuro.
 La lambda ha un unica funzionalità, stampa e salvataggio della stampa.
 \begin{figure}[H]
 \includegraphics[scale = 0.6]{useCases.png}
-\caption{Casi d'uso}
-\label{fig:mesh2}
+\caption{Schema logico}
 \end{figure}
 Ogni stampa deve seguire seguire lo schema a blocchi definito, non è possibile 
 ad esempio affiancare un immagine in una tabella. 
@@ -400,6 +406,12 @@ scrivono sul documento.
 È possibile richiedere il documento tramite "getDocument()". 
 \\ Il file è uno stream di dati e può essere spedito direttamente su S3. 
 
+\begin{figure}[H]
+\includegraphics[]{uml.png}
+\centering
+\caption{Casi d'uso}
+\end{figure}
+
 \subsection{Test automatizzati}
 Si è deciso di effettuare del "unit testing" tramite la libreria mocha.
 Ogni singolo modulo è testato singolarmente con dati corretti ed errati. 
@@ -441,7 +453,6 @@ azienda e servizio in totale.
 \begin{figure}[H]
 \includegraphics[width =\textwidth]{lista_attività.jpg}
 \caption{Lista di attività}
-\label{fig:mesh3}
 \end{figure}
 Di seguito è possibile vedere un esempio di stampa di attività. 
 In alto è possibile trovare il server di provenienza, con tanto di data e 
@@ -455,7 +466,6 @@ In questo caso sono presenti 6 attività, ma possono essere fino a 20 mila.
 \begin{figure}[H]
 \includegraphics[width =\textwidth]{report.png}
 \caption{Stampa del elenco attività}
-\label{fig:mesh4}
 \end{figure}
 
 Alternativamente è possibile stampare i dettagli di un unica attività. 
@@ -464,13 +474,11 @@ dal dispositivo, i punti gps e la rapresentazione sulla cartina.
 \begin{figure}[H]
 \includegraphics[width =\textwidth]{singola_attività.png}
 \caption{Attività visualizzazione}
-\label{fig:mesh5}
 \end{figure}
 Esempio di stampa di un attività 
 \begin{figure}[H]
 \includegraphics[width =\textwidth]{report_attività.png}
 \caption{Stampa di una singola attività}
-\label{fig:mesh6}
 \end{figure}
 In questo caso è presente solo una via ma è possibile averne potenzialmente 
 fino a 20 mila. Ogni singolo blocco fa parte del blocco in alto.  
@@ -483,7 +491,6 @@ stampa più impegnativa, perché contiene molte immagini.
 \begin{figure}[H]
 \includegraphics[width =\textwidth]{performance.png}
 \caption{Performance}
-\label{fig:mesh6}
 \end{figure}
 Al aumentare delle attività aumenta in maniera quasi lineare il tempo. Questo 
 è dovuto al numero alto di cicli di scrittura.
