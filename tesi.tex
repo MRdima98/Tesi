@@ -69,12 +69,12 @@ Questo è vero fin tanto che richiede minime risorse e tempo di calcolo.
 \\ Cosa succede quando un servizio secondario, importante per i clienti ma non 
 abbastanza da giustificare un grosso impegno da parte del server, pesa gravemente 
 sul software? 
-È il problema che sta affrontando Engim; il servizio di conversione da dati 
-a PDf richiede troppe risorse per periodi prolungati rendendo difficile la user 
+È il problema che sta affrontando Engim; il servizio di conversione di dati 
+in PDf richiede troppe risorse per periodi prolungati rendendo difficile la user 
 esperienze ma soprattutto sovraccaricando il server.
 Intuitivamente si potrebbe migliorare la situazione attuale, andando a riscrivere 
 il codice incriminato.
-Questa soluzione però risolve solo il problema in termini di tempo e non di 
+Una soluzione che però risolve solo il problema in termini di tempo e non di 
 risorse, resta comunque un processo potenzialmente gravoso sulla macchina. 
 Un altro possibile approccio sarebbe quello di scaricare delegare il calcolo.
 \\ È possibile effettivamente astrarre il processo di conversione, portarlo su 
@@ -98,7 +98,12 @@ tracciano il percorso delle macchine spazzaneve e spargisale.
 I tracker possono essere prodotti fisici oppure un app per smartphone. A loro 
 volta i prodotti fisici si dividono in fissi e mobili. Il servizio include
 anche un gestionale per poter visualizzare, modificare o archiviare i propri dati.
-\\ Twicetouch è noleggio di dispositivi di sicurezza individuale.
+\begin{figure}[H]
+\includegraphics[scale = 2]{dispositivi.jpg}
+\centering
+\caption{Servizi disponibili}
+\end{figure}
+Twicetouch è noleggio di dispositivi di sicurezza individuale.
 Il prodotto tutela i lavoratori in solitario mandando una segnalazione in caso di
 emergenza. Esistono due tipi di rilevazione: 
 \begin{itemize}
@@ -135,42 +140,17 @@ potente possa essere il backend potrebbe essere comunque eccessivo dover
 elaborare decine se non centinaia di migliaia di richieste contemporanee.
 Uno di questi server è EC2.
 
-% \subsection{Microservizi}
-% Un servizio è un processo che: esegue specifiche operazioni autonomamente, 
-% risponde a eventi oppure rimane in attesa di una richiesta. 
-% Nel caso in cui queste operazioni vengano svolte continuamente, il servizio è 
-% estremamente vantaggioso. Non è però necessario che il servizio sia sempre in 
-% esecuzione se viene usato in maniera discontinua o per brevi periodi di tempo. 
-% I microservizi coprono questo ruolo, hanno le stesse caratteristiche di un servizio
-% ma eseguono solo su richiesta. 
-% \\ L'ambiente di esecuzione è completamente gestito da AWS, l'unica requisito per 
-% creare un microservizio è caricare il proprio codice. In questo caso viene 
-% noleggiato il tempo di calcolo invece che una macchiana fisica o virtuale.
-% L'ambiente viene creato al momento della richiesta, esegue il codice e cessa di 
-% esistere. 
-% Quando il microservizio non è attivo non ci sono costi.
-% \\ È bene tenere in mente due importanti caratteristiche dei microservizi:
-% \begin{itemize}
-%   \item L'ambiente non ha spazio di archiviazione, qualora sia necessario 
-%   salvare un file, bisogna caricarlo in un servizio di clound computing come S3
-%   \item Le tecnologie devono essere compatibili con l'infrastruttura sottostante,
-%   il che limita le nostre scelte
-% \end{itemize}
-% Avendo in mente queste considerazioni, un caso d'uso adatto ai microservizi 
-% è un servizio API che viene usato in maniera occasionale oppure per brevi periodi 
-% fissi.
-
 \subsection{Sistema automatico di generazione di report}
 Engim esegue una manutenzione annuale di database, che consiste nell'archiviazione
 dei dati. Questi possono essere salvati dal cliente, nel caso fosse interessato 
-o necessitato, sotto forma di pdf oppure xls.
+o necessitato, sotto forma di PDF oppure XLSX.
 \\ 
 Le informazioni più importanti sono l'elenco e le specifiche di tutte le "attività". 
 Un'attività contiente una serie di dati, tra cui: coordinate
 gps, costi di lavoro, tempo di lavoro e altro.  
 Al momento il servizio è implementato da Rails tramite una libreria di ruby. 
 Il sistema attuale crea un istanza di chrome, l'istanza contiene un HTML
-che si desidera convertire in pdf e infine avviene il parsing del documento.
+che si desidera convertire in PDF e infine avviene il parsing del documento.
 \\ Questo ha una serie di gravi problemi:
 \begin{itemize}
   \item La necessità di avviare un istanza di Chrome e il parsing di un HTML è
@@ -198,7 +178,8 @@ mercato del cloud computing ha un valore di 706 miliardi. Si stima che entro il
 2025 il numero crescerà fino a 1.8 bilioni. 
 \\ L'idea di condividere risorse non è nuova, bensì nasce nel 1960. Al tempo 
 un ufficio aveva un mainframe con varie postazioni. Ogni macchina poteva fare 
-una richiesta tramite un job e doveva aspettare l'esecuzione: remote job entry.
+una richiesta tramite un job e doveva aspettare l'esecuzione: 
+\textbf{remote job entry}.
 Nel 1990 le aziende di telecomunicazioni sono passate da connessioni 
 point-to-point a virtual private network.
 La performance non ha subito alcun miglioramento ma adesso era possibile 
@@ -208,38 +189,70 @@ alla loro richiesta, questo risultava in un grosso risparmio per l'azienda.
 nel 2002 Amazon Web Services.
 
 \subsection{AWS}
-Amazon Web Services è una susidiaria di Amazon che offre servizi di cloud 
+Amazon Web Services è una sussidiaria di Amazon che offre servizi di cloud 
 computing e APIs per individui, aziende e governi.
-Un servizio molto popolare è l'autoscaling, ovvero un server capace di aumentare 
-di potenza quando ha bisogno di più potenza senza ausiglio umano. 
-Uno dei serivzi più importanti di amazon è Amazon Elastic Compute Clound (EC2), 
-un cluster di computer usabili tramite REST API, CLI o AWS console. Questi 
-computer simulano in tutto e per tutto un server tradizionale, ma non hanno 
-un unità di memoria. 
-È quindi necessario usare un servizio di storage, sia per i dati testuali 
-quindi un database sia per i dati multimediali. 
-\\ Amazon aurora se fosse necessario avere un servizio di database compatibile 
-con mysql. 
-\\ Amazon Dynamo DB, se service un database caching. 
-\\ Amazon S3 per archiviazione di dati multimeddiali.
-Ma è anche possibile anche dividere la logica in molteplici parti, tramite un 
-architettura a microservizi
+Il più popolare è Amazon Elastic Compute Clound (EC2), 
+un cluster di computer usabili tramite REST API, CLI o AWS console.
+EC2 ha supporto per processori intel, AMD e Arm, coprendo ogni tipologia di 
+macchina incluso macOS.
+Di frequente questo servizio viene usato in coppia con Amazon CloudWatch. 
+Il quale ha lo scopo di monitorare CPU, archiviazione e rete, e quando fosse 
+necessario aumentare le risorse.
+Il cliente può quindi abbandonare l'allocazione manuale di risorse, il server 
+pensa a tutto e addebita in base ai componenti usati in ogni determinato momento. 
+\\ Il server può essere di natura tradizionale o "istance-store". 
+Nel secondo caso non appena l'istanza si fermi, sia per un malfunzionamento 
+ma anche per un banale riavvio, ogni dato salvato in locale verrà perso. 
+Ovviamente si hanno a disposizione una serie alternativa di unità di archiviazione.
+
+\subsection{Archiviazione}
+Amazon Elastic Block Store (EBS) simula l'aggiunta di un unità di memoria di 
+massa fino a 16 TiB per ogni volume. 
+È possibile utilizzarne molteplici, proprio come in un computer fisico, ma con 
+un vantaggio importante: ogni volume ha almeno un backup. 
+Il fallimento di un singolo componente non compromette il sistema.
+\\ Non sempre è necessario gestire una memoria così complessa, ma è sufficiente 
+avere uno spazio, simile a google drive, dove salvare alcuni file multimediali.
+Amazon S3 è un servizio di archiviazione di oggetti veloce e scalabile. 
+Tale locazione è accessibile da qualsiasi piattaforma e si paga in base allo 
+spazio utilizzato.
+\begin{figure}[H]
+\includegraphics[width = \textwidth]{bucket.png}
+\centering
+\caption{Schema di un bucket}
+\end{figure}
+Il vantaggio rispetto a EBS è quello di evitare la manutenzione dell'unità 
+di memoria, lasciandola al provider. 
+\\ Servizio che si sposa molto bene con i microservizi
 
 \subsection{Microservizi}
-Un architettura a microservizi indica una serie di componenti separati che 
-possono essere sviluppati e rilasciati in maniere indipendente. 
-I prodotti amazon che permetto queste semplicita sono amazon sns, per i notifiche
-amazons sqs per i messaggi e amazon lambda per il codice. 
-Particolarmente interessante è labmda, che è una funzione senza casa.
-È un codice che non è attivo per la maggior parte del tempo, quando riceve una 
-richiesta viene creato il suo ambiente e risponde al servizio. 
-Quindi permette di portare fuori dal server piccoli pezzi di logica specifica, 
-e eseguirli su un ambiente pulito e veloce. 
-È possibile quindi fare un implementazione veloce, modulare e evitare di 
-sovvracaricare il prodotto principale. 
-Rispetto a un modello tradizionale a servizi permette di risparmiare molta 
-potenza di calcolo e scala molto facilmente. 
-Nel caso però in cui si parla di processi naturalmente non è molto adatto.
+Un passaggio ulteriore verso il cloud computing è quello di non avere nemmeno 
+un sistema operativo o un ambiente di sviluppo.
+Le lamda sono funzioni salvate su piccole unità di memoria dormiente. 
+Quando viene ricevuta una richiesta HTTPS, l'ambiente verrà creato e la 
+funzione eseguirà. 
+Il costo dipende dal tempo di esecuzione unito alla potenza della macchina 
+da virtualizzare. 
+Non si ha alcun controllo sul sistema operativo, ne alcun altro aspetto 
+dell'ambiente.
+È possibile sviluppare un blocco logico e portarlo in produzione in maniera 
+estremamente facile, ma avendo il limite delle tecnologie compatibili.
+Il vantaggio di tale operazione è quello di prendersi carico del calcolo 
+necessario, liberato risorse preziose dal proprio server. 
+Lo spazio di archiviazione disponibile è il minimo necessario per salvare il 
+codice, qualsiasi altro file va salvato su un altro servizio.
+\begin{figure}[H]
+\includegraphics[width = \textwidth]{lambda.png}
+\centering
+\caption{Esempio di lambda unito a s3}
+\end{figure}
+Nel caso in cui sia necessario compiere un operazione raramente o in maniera 
+discontinua, lambda sembra essere un eccellente opzione. 
+Il sistema ha un tempo di accensione maggiore alla prima chiama (cold start)
+che per un tempo limitato viene evitato, dopo il primo avvio.
+Naturalmente non è una tecnologia adatto a ogni caso. 
+Un servizio è la scelta corretta 
+quando serve una risposta immediata o sia necessario un esecuzione continua.
 
 \section{Requisiti del progetto}
 \subsection{Descrizione}
@@ -268,7 +281,7 @@ e di altri file di output come KML e XLSX.
 
 \subsection{Sicurezza}
 L'autenticazione avviene a livello di codice, sia sul server che sul microservizio.
-\\ La libreria "aws-sdk-lambda" permette di stabilire una connessione diretta con la 
+\\ La libreria \textit{aws-sdk-lambda} permette di stabilire una connessione diretta con la 
 lambda. È sufficiente fornire: nome della funzione, regione, credenziali e payload. 
 Le credenziali sono salvati dentro un file crittografato yaml. 
 Un ulteriore livello di sicurezza è integrato nella funzione sotto forma 
