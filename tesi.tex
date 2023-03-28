@@ -409,10 +409,9 @@ Una volta che il file è stato salvato, rails può pescare il file e mostrarlo
 o lasciare il download per l'utente.
 \\ Il bucket temporaneo viene svuotato periodicamente, se un dato serve per il 
 cliente verrà salvato sul bucket permanente. 
-Se invece il cliente non se lo tiene per conto suo verrà cancellato nel tempo.
-\\ Il motivo per la divisione dei bucket è per dividere la logica, io non voglio 
-che la mia lamda si occupi del organizzazione dei file, come non voglio 
-che rails metta le mani nel bucket di lambda, quindi si salva tutto nel suo.
+Altrimenti nel tempo verrà cancellato, importante per la privacy.
+\\ Il motivo per la divisione dei bucket è per dividere la logica, 
+la lambda non ha l'obiettivo di organizzare un bucket.
 
 
 
