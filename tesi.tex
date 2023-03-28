@@ -54,7 +54,7 @@
 Un software gestionale è un sistema creato per aiutare un'azienda a organizzare 
 e gestire il lavoro.
 Engim offre la possibilità di monitorare le mansioni di un lavoratore e garantire 
-la sua sicurezza tramite  ServizioGPS e TwiceTouch, i due prodotti di punta dell'azienda. 
+la sua sicurezza tramite ServizioGPS e TwiceTouch, i due prodotti di punta dell'azienda. 
 In particolare, servizioGPS salva il percorso di una macchina lavoratrice e 
 permette di calcolare il contributo dovuto. Ogni via attraversata viene salvata, 
 ogni 5 secondi viene salvata una coordinata GPS.
@@ -98,12 +98,18 @@ tracciano il percorso delle macchine spazzaneve e spargisale.
 I tracker possono essere prodotti fisici oppure un app per smartphone. A loro 
 volta i prodotti fisici si dividono in fissi e mobili. Il servizio include
 anche un gestionale per poter visualizzare, modificare o archiviare i propri dati.
+
 \begin{figure}[H]
 \includegraphics[scale = 2]{dispositivi.jpg}
 \centering
 \caption{Servizi disponibili}
 \end{figure}
-Twicetouch è noleggio di dispositivi di sicurezza individuale.
+Come è possibile osservare dalla figura, noleggiando uno qualsiasi dei dispositivi 
+servizioGPS è possibile avere un resoconto dettagliato del percorso effettuato 
+dai lavoratori anche in tempo reale. 
+Inoltre garantisce della sicurezza extra monitorando lo stile di guida e 
+possibili furti o incidenti. 
+\\ Twicetouch è noleggio di dispositivi di sicurezza individuale.
 Il prodotto tutela i lavoratori in solitario mandando una segnalazione in caso di
 emergenza. Esistono due tipi di rilevazione: 
 \begin{itemize}
@@ -131,15 +137,19 @@ Ruby on Rails è usato per front-end e gran parte del backend di servizioGPS.
 Qualsiasi necessità front end side è responsabilità di Rails, questo è dove 
 viene svolto la maggior parte della manutenzione siccome ha molte servizi diversi 
 ed è a stretto contatto con il cliente.
-\\ Il Fetcher invece si dedica esclusivamente alla elaborazione di coordinate GPS. 
+\\ Il Fetcher (backend di supporto) invece si dedica esclusivamente alla elaborazione
+di coordinate GPS. 
 Questo non si trova sullo stesso server di Rails, bensi sul suo privato, molto 
-più potente di quello di rails siccome è più vitale per il lavoro.
-Le operazioni che fa sono poche quindi richiede poca manutenzione. 
-Allo stesso scopo il servizio si appoggia su molteplici server, per quanto 
-potente possa essere il backend potrebbe essere comunque eccessivo dover 
-elaborare decine se non centinaia di migliaia di richieste contemporanee.
+più potente siccome svolge una funzione vitale per il gestionale.
+Le operazione che svolge sono di natura molto semplici. 
+Avendo quindi poche funzionalità tende ad avere bisogno di una minore 
+manutenzione.
+Inoltre il servizio si appoggia su molteplici server. 
+Non è importante quanto potente possa essere la macchina, con decine o addirittura 
+centinaia di migliaia di punti, si corre un grosso rischio tenendo un singolo 
+calcolare.
 \\ I dati vengono salvati in un database relazionare MariaDB e utilizza come 
-servizi di cachi Redis e DynamoDB. 
+servizi di cache Redis e DynamoDB. 
 \\ Ogni app è sviluppato in android nativo e lavora tramite chiamate API 
 con il suo server designato. 
 
@@ -151,13 +161,13 @@ o necessitato, sotto forma di PDF oppure XLSX.
 \\ 
 Le informazioni più importanti sono l'elenco e le specifiche di tutte le "attività". 
 Un'attività contiene una serie di dati, tra cui: coordinate
-gps, costi di lavoro, tempo di lavoro e altro.  
+GPS, costi di lavoro, tempo di lavoro e altro.  
 Al momento il servizio è implementato da Rails tramite una libreria di ruby. 
 Il sistema attuale crea un istanza di chrome, l'istanza contiene un HTML
 che si desidera convertire in PDF e infine avviene il parsing del documento.
 \\ Questo ha una serie di gravi problemi:
 \begin{itemize}
-  \item La necessità di avviare un istanza di Chrome e il parsing di un HTML è
+  \item La necessità di avviare un istanza di chrome e il parsing di un HTML è
   estremamente costoso dal punto di vista delle risorse
   \item Il parsing di un HTML è anche estremamente costoso in termini di tempo,
   aggravato dalle lunghe query dovute alla grande mole di dati 
@@ -171,7 +181,7 @@ Il problema sicuramente si potrebbe attenuare direttamente nel frontend.
 Ad esempio facendo una misurazione di performance per vedere quali 
 miglioramenti è possibile fare, ma questo non risolverebbe la richiesta di risorse. 
 C'è un alternativa molto più valida.
-La natura del nostro problema sembra molto adatta per il cloud computing.
+\\ La natura del nostro problema sembra perfetta per il cloud computing.
 L'operazione è ripetitiva, ben definita e usata per brevi periodi. Altri vantaggi 
 importanti sono il risparmio di risorse del server, che evita di gravare sulle 
 operazioni più critiche, e la possibilità di usare il progetto per qualsiasi 
@@ -180,9 +190,11 @@ altro prodotto Engim.
 \section{Cloud computing}
 \subsection{Introduzione}
 Il cloud computing è una serie di servizi on-demand, generalmente di archiviazione 
-e potenza di calcola, che non necessitano la gestione diretta da parte del utente. 
+e potenza di calcola. 
+L'utente cede, in parte o totalmente, il controllo sul sistema a sua disposizione, 
+evitando la manutenzione necessaria per le macchine fisiche.
 Il servizio viene erogato con un modello pay-as-you-go, ovvero si paga l'effettivo 
-utilizzo invece che una quota fessa per un determinato periodo. 
+utilizzo invece che una quota fissa per un determinato periodo. 
 Questo approccio potrebbe aiutare a risparmiare soldi, soprattutto durante 
 la fase iniziale di investimento, siccome non richiede pagamenti di attivazione.
 Allo stesso tempo si è in balìa del provider, se le richieste dovessero 
@@ -190,11 +202,11 @@ aumentare notevolmente ci si potrebbe ritrovare con una spesa enorme.
 È un rischio che le grandi aziende sono felici di correre, infatti nel 2023 il 
 mercato del cloud computing ha un valore di 706 miliardi. Si stima che entro il 
 2025 il numero crescerà fino a 1.8 bilioni. 
-\\ L'idea di condividere risorse non è nuova, bensì nasce nel 1960. Al tempo 
+\\ L'idea di condividere risorse non è nuova, infatti nasce nel 1960. Al tempo 
 un ufficio aveva un mainframe con varie postazioni. Ogni macchina poteva fare 
-una richiesta tramite un job e doveva aspettare l'esecuzione: 
-\textbf{remote job entry}.
-Nel 1990 le aziende di telecomunicazioni sono passate da connessioni 
+una richiesta tramite un job e doveva aspettare l'esecuzione del computer 
+centrale: \textbf{remote job entry}.
+\\ Nel 1990 le aziende di telecomunicazioni sono passate da connessioni 
 point-to-point a virtual private network.
 La performance non ha subito alcun miglioramento ma adesso era possibile 
 decidere come impiegare le risorse. I clienti ricevevano banda in base 
@@ -209,12 +221,12 @@ Il più popolare è Amazon Elastic Compute Clound (EC2),
 un cluster di computer usabili tramite REST API, CLI o AWS console.
 È il corrispettivo di un server tradizionale nel contesto del cloud computing. 
 EC2 supporta una vasta gamma di processori, dai più tipici come Intel e AMD, 
-fino a Arm per l'architettura macOS.
+fino ad Arm per l'architettura macOS.
 Ogni componente simula il comportamento della sua controparte fisica, permettendo 
 l'aggiunta e la rimozione di tale unità. 
-L'utente può quindi decidere di personalizzare la sua macchina a suo piacimento. 
-Di frequente questo servizio viene usato in coppia con Amazon CloudWatch. 
-Il quale ha lo scopo di monitorare CPU, archiviazione e rete, e quando fosse 
+L'utente può quindi personalizzare la macchina a suo piacimento. 
+\\ Di frequente questo servizio viene usato in coppia con Amazon CloudWatch,
+il quale ha lo scopo di monitorare CPU, archiviazione e rete, e quando fosse 
 necessario aumentare le risorse.
 Il sistema ogni minuto, oppure secondo, può scegliere se effettuare dello 
 scaling.
@@ -245,9 +257,13 @@ spazio utilizzato.
 \centering
 \caption{Schema di un bucket}
 \end{figure}
-Il vantaggio rispetto a EBS è quello di evitare la manutenzione dell'unità 
-di memoria, lasciandola al provider. 
-\\ Servizio che si sposa molto bene con i microservizi
+Come si evince dall'immagine S3 permette a qualsiasi genere di applicazione 
+l'accesso alla memoria. 
+Una volta salvato il file è possibile scaricalo tramite lo stesso servizio 
+oppure un altro e persino analizzarlo.
+\\ Rispetto a EC2, S3 non richiede la conoscenza o gestione della tecnologia 
+sottostante, è tutto in mano al provider.
+Tecnologia che si sposa molto bene con i microservizi
 
 \subsection{Microservizi}
 Un passaggio ulteriore verso il cloud computing è quello di non avere nemmeno 
@@ -255,7 +271,7 @@ un sistema operativo o un ambiente di sviluppo.
 Le lamda sono funzioni salvate su piccole unità di memoria dormiente. 
 Quando viene ricevuta una richiesta HTTPS, l'ambiente verrà creato e la 
 funzione eseguirà. 
-Il costo dipende dal tempo di esecuzione unito alla potenza della macchina 
+\\ Il costo dipende dal tempo di esecuzione unito alla potenza della macchina 
 da virtualizzare. 
 Non si ha alcun controllo sul sistema operativo, ne alcun altro aspetto 
 dell'ambiente.
@@ -270,7 +286,10 @@ codice, qualsiasi altro file va salvato su un altro servizio.
 \centering
 \caption{Esempio di lambda unito a s3}
 \end{figure}
-Nel caso in cui sia necessario compiere un operazione raramente o in maniera 
+Un semplice esempio di lambda che utilizza S3 come spazio di archiviazione. 
+In questo caso l'utente richiede un informazione particolare e la lamda 
+va a trovare tale informazione da DynamoDB. 
+\\ Nel caso in cui sia necessario compiere un operazione raramente o in maniera 
 discontinua, lambda sembra essere un eccellente opzione. 
 Il sistema ha un tempo di accensione maggiore alla prima chiama (cold start)
 che per un tempo limitato viene evitato, dopo il primo avvio.
@@ -302,7 +321,10 @@ e di altri file di output come KML e XLSX.
 \includegraphics[width =\textwidth]{realUseCases.png}
 \caption{Casi d'uso}
 \end{figure}
-
+I casi d'uso sono molto semplici, siccome una lambda è pensata per essere 
+un singolo blocco logico, deve effettuare una singola funzione.
+L'utente può richiedere la visualizzazione di una stampa oppure il diretto 
+download. La funzione esegue il parsing dei dati.
 
 
 \subsection{Sicurezza}
@@ -358,8 +380,7 @@ e permette di stampare qualsiasi dato a prescindere dalla provenienza.
 Durante l'esecuzione vengono effettuate delle connessioni dirette tra i servizi. 
 In un primo momento Rails si collega con la lambda, questa connessione potrebbe 
 essere soggetta a timeout. 
-La lambda ha un limite di tempo di esecuzione, al suo termine viene cancellata, 
-in modo da proteggere da possibili loop infiniti.
+C'è un limite di tempo di calcolo in modo da evitare loop infiniti.
 \\ Lambda a sua volta crea un canale con il bucket, per poter 
 effettuare il caricamento del file, qualsiasi tipo di errore viene catturato da javascript.
 Nel caso in cui il file venga salvato correttamente,
@@ -401,15 +422,16 @@ La lambda ha un unica funzionalità, stampa e salvataggio della stampa.
 Ogni stampa deve seguire seguire lo schema a blocchi definito, non è possibile 
 ad esempio affiancare un immagine in una tabella. 
 Qualsiasi implementazione che non segua lo standard va aggiunta alla funzione.
-\\ È possibile stampare immagini. Queste devono essere prese in input siccome non 
+\\ È possibile stampare immagini che devono essere prese in input siccome non 
 esiste una memoria permanente per la funzione.
-\\ Ogni file viene salvato su lambda, con il nome che è data e ora di oggi. 
-Lambda automaticamente crea cartelle divise per mese e per giorni. 
-Una volta che il file è stato salvato, rails può pescare il file e mostrarlo 
-o lasciare il download per l'utente.
+\\ Ogni file viene salvato su lambda, il nome univoco di ogni file è 
+data e ora di quel esatto istante. 
+S3 crea automaticamente cartelle divise per mese e per giorni. 
+Una volta che il file è stato salvato, Rails può trovare il file e mostrarlo 
+oppure scaricarlo per l'utente.
 \\ Il bucket temporaneo viene svuotato periodicamente, se un dato serve per il 
-cliente verrà salvato sul bucket permanente. 
-Altrimenti nel tempo verrà cancellato, importante per la privacy.
+cliente verrà salvato sul bucket permanente, 
+altrimenti nel tempo verrà cancellato.
 \\ Il motivo per la divisione dei bucket è per dividere la logica, 
 la lambda non ha l'obiettivo di organizzare un bucket.
 
@@ -426,7 +448,17 @@ funzione. Assicurarsi che la stampa esegue correttamente ed in tempi ragionevoli
 di staging. Dopo un breve periodo di test, sarà possibile portare la modifica 
 su un server di produzione. L'integrazione partirà da un server per effettuare 
 test aggiuntivi e infine raggiungera i restanti.
-
+\\ Ogni deploy è effettuato attraverso Gitlab usando le pipeline. 
+Definendo un file .gitlab-ci è possibile eseguire una serie di operazioni 
+bash-like. 
+Nel caso della lambda la pipeline compie i seguenti passaggi: 
+\begin{itemize}
+  \item Crea un ambiente immagine da usare come ambiente di sviluppo 
+  \item Installa tutte le dipendenze specificati nel nostro pacchetto
+  \item Esegue tutti i test automatizzati 
+  \item Se tutto funziona correttamente esegue il deploy, altrimenti avverte 
+  che la pipe ha fallito
+\end{itemize}
 
 \subsection{Creazione di un file e salvataggio su S3}
 È possibile interagire con un bucket S3 tramite due modi: connessione con link 
@@ -464,13 +496,27 @@ scrivono sul documento.
 \begin{figure}[H]
 \includegraphics[]{uml.png}
 \centering
-\caption{Casi d'uso}
+\caption{UML}
 \end{figure}
+Struttura del file-classe lambda. 
+Una singola classe che crea 3 variabili a livello di costruzione da usare 
+all'interno di ogni istanza del oggetto. 
+La maggior parte dei metodi sono funzioni di scrittura direttamente 
+nel file PDF.
+Eccezione fatta per documentWidth() che calcola la larghezza del file in base 
+all'input e getDoc() che ritorna il file. 
 
 \subsection{Test automatizzati}
 Si è deciso di effettuare del "unit testing" tramite la libreria mocha.
-Ogni singolo modulo è testato singolarmente con dati corretti ed errati. 
-Ogni input è generato casualmente grazie a "faker-js". 
+In un file separato viene generato un evento valido per la lambda.
+Ogni dato dell'evento è generato in maniera casuale tramite "faker-js". 
+Naturalmente questi dati hanno una serie di limitazioni per poter essere 
+casuali ma al contempo validi per lo scopo. 
+Sono stati quindi effettuati una serie di test di sicurezza, generando 
+richieste valide e invalidi, una per ogni tipo di errore. 
+È stato anche fatto una serie di test dove veniva verificato l'input. 
+Partendo dal evento valido, vengono rimosse informazioni importanti e ci si 
+aspetta un errore di ritorno.
 Infine le connessioni con AWS sono simulate tramite "aws-sdk-dev". 
 
 \subsection{Ruby on Rails}
@@ -513,7 +559,7 @@ Di seguito è possibile vedere un esempio di stampa di attività.
 In alto è possibile trovare il server di provenienza, con tanto di data e 
 azienda.
 A destra è scritta la versione del software della lambda. 
-Il header è il blocco con il titolo e il logo di serviziogps.
+Il header è il blocco con il titolo e il logo di servizioGPS.
 Il body è il blocco che riassume il blocco visto nell'immagine precendente. 
 Il table è l'elenco di tutte le attività, che è identico a quello sul server, 
 esclusa l'ultima posizione.
@@ -525,27 +571,29 @@ In questo caso sono presenti 6 attività, ma possono essere fino a 20 mila.
 
 Alternativamente è possibile stampare i dettagli di un unica attività. 
 In questa pagina è possibile vedere nel dettaglio il percorso fatto 
-dal dispositivo, i punti gps e la rapresentazione sulla cartina. 
+dal dispositivo, i punti GPS e la rapresentazione sulla cartina. 
 \begin{figure}[H]
 \includegraphics[width =\textwidth]{singola_attività.png}
 \caption{Attività visualizzazione}
 \end{figure}
-Esempio di stampa di un attività 
+Le informazioni vitali del riquadro precedente è possibile vederle nei singoli 
+blocchi di un attività. Il percorso è riassunto in fondo sotto forma di tabella.
+Esempio di stampa di un attività:
 \begin{figure}[H]
 \includegraphics[width =\textwidth]{report_attività.png}
 \caption{Stampa di una singola attività}
 \end{figure}
 In questo caso è presente solo una via ma è possibile averne potenzialmente 
-fino a 20 mila. Ogni singolo blocco fa parte del blocco in alto.  
-Oltre al logo di serviziogps è presente anche il logo del comune o azienda 
-se è presente. 
+fino a 20 mila. 
+Oltre al logo di servizioGPS è presente anche il logo del comune o azienda 
+se è stato aggiunto dal cliente.
 
 \subsection{Performance}
 Sono stati fatti test di performance sul elenco delle attività siccome è la 
 stampa più impegnativa, perché contiene molte immagini.  
 \begin{figure}[H]
 \includegraphics[width =\textwidth]{performance.png}
-\caption{Performance}
+\caption{Grafico a blocchi}
 \end{figure}
 Al aumentare delle attività aumenta in maniera quasi lineare il tempo. Questo 
 è dovuto al numero alto di cicli di scrittura.
@@ -557,7 +605,7 @@ misure del foglio e salvarle come costanti oppure modificare il JSON per
 semplificare la struttura dati. 
 Tuttavia non è necessario perché sono tempi ragionevoli.
 È più importante notare che il server usi risorse minime, in quanto deve 
-solo aspettare il ritorno della chiamata https. Questo era il fulcro del progetto, 
+solo aspettare il ritorno della chiamata HTTPS. Questo era il fulcro del progetto, 
 permettere una migliore e più sicura navigazione alleggerendo il lavoro compiuto 
 dal software.
 \\ L'implementazione precedente aveva una performance ottima per un numero ridotto 
@@ -566,6 +614,23 @@ siccome non era legata a dei tempi fissi di connessioni. Allo stesso tempo al
 crescere delle attività aumentava esponenzialmente il tempo e rendeva alto il 
 rischio di crash.
 
+\subsection{Aspetto economico}
+Il costo della lambda dipende sia dalla potenza della macchina sia dal 
+tempo di esecuzione. 
+Di default la macchina esegue con 512 MiB di memoria e 128 MiB di archiviazione. 
+Naturalmente questa potenza è insufficiente, rallenta estremamente l'esecuzione. 
+L'aumento di memoria fissa non influenza in alcun modo la velocità di esecuzione. 
+L'allocazione di più memoria, e di conseguenza di potenza di CPU, invece 
+genera ottimi risultati. 
+\\ Fino a 2 GiB la performance aumenta notevolmente, qualsiasi valore oltre non 
+crea nessun aumento degno di nota. 
+Facendo una serie di test si è visto che è più conveniente avere la macchina 
+meno potente che esegue per periodi più lunghi, piuttosto che una macchina 
+estremamente potente che esegue per brevi tratti.
+Osservazione intuitiva, siccome c'è una costante di tempo per la creazione 
+dell'ambiente. 
+A conti fatti si è concordato di tenere una macchina di 1 GiB e 512 MiB di 
+memoria fissa. 
 
 \thispagestyle{empty}
 \newpage 
