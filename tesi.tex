@@ -61,10 +61,10 @@ ogni 5 secondi viene salvata una coordinata GPS.
 \\ Nell'affrontare una grande quantità di dati, diventa importante
  disporre di un metodo affidabile e intuitivo per l'archiviazione degli stessi.
 Un modo comune per salvare informazioni è tramite un file XLSX o PDF.
-I file PDF sono semplici da usare, da interpretare e sono estremamente diffusi 
+I file PDF sono semplici da usare, interpretare e sono estremamente diffusi 
 rendendoli perfetti per un cliente senza capacità tecniche. 
 Un servizio simile può essere parte integrale del software in quanto effettivamente 
-è un estensione dei servizi offerti. 
+è un estensione di esso.
 Questo è vero fin tanto che richiede minime risorse e tempo di calcolo.
 \\ Cosa succede quando un servizio secondario, importante per i clienti ma non 
 abbastanza da giustificare un grosso impegno da parte del server, pesa gravemente 
@@ -76,7 +76,7 @@ Intuitivamente si potrebbe migliorare la situazione attuale, andando a riscriver
 il codice incriminato.
 Una soluzione che però risolve solo il problema in termini di tempo e non di 
 risorse, resta comunque un processo potenzialmente gravoso sulla macchina. 
-Un altro possibile approccio sarebbe quello di scaricare delegare il calcolo.
+Un altro possibile approccio sarebbe quello di delegare il calcolo.
 \\ È possibile effettivamente astrarre il processo di conversione, portarlo su 
 un servizio di terze parti migliorando performance e risparmiando risorse.
 
@@ -109,7 +109,8 @@ servizioGPS è possibile avere un resoconto dettagliato del percorso effettuato
 dai lavoratori anche in tempo reale. 
 Inoltre garantisce della sicurezza extra monitorando lo stile di guida e 
 possibili furti o incidenti. 
-\\ Twicetouch è noleggio di dispositivi di sicurezza individuale.
+
+Twicetouch è noleggio di dispositivi di sicurezza individuale.
 Il prodotto tutela i lavoratori in solitario mandando una segnalazione in caso di
 emergenza. Esistono due tipi di rilevazione: 
 \begin{itemize}
@@ -119,7 +120,7 @@ emergenza. Esistono due tipi di rilevazione:
 \end{itemize}
 Similmente a servizioGPS è possibile noleggiare un dispositivo fisico (badge) oppure
 l'app per android. In entrambi i casi è possibile impostare i numeri in caso di 
-emergenza, che riceveranno una chiamata e un messagio SMS.
+emergenza, che riceveranno una chiamata e un messaggio SMS.
 
 \subsection{Infrastruttura}
 Le tecnologie usate per servizioGPS sono le seguenti:
@@ -137,12 +138,11 @@ Ruby on Rails è usato per front-end e gran parte del backend di servizioGPS.
 Qualsiasi necessità front end side è responsabilità di Rails, questo è dove 
 viene svolto la maggior parte della manutenzione siccome ha molte servizi diversi 
 ed è a stretto contatto con il cliente.
-\\ Il Fetcher (backend di supporto) invece si dedica esclusivamente alla elaborazione
+\\ Il "Fetcher" (backend di supporto) invece si dedica esclusivamente alla elaborazione
 di coordinate GPS. 
 Questo non si trova sullo stesso server di Rails, bensi sul suo privato, molto 
 più potente siccome svolge una funzione vitale per il gestionale.
-Le operazione che svolge sono di natura molto semplici. 
-Avendo quindi poche funzionalità tende ad avere bisogno di una minore 
+Avendo poche funzionalità tende ad avere bisogno di una minore 
 manutenzione.
 Inoltre il servizio si appoggia su molteplici server. 
 Non è importante quanto potente possa essere la macchina, con decine o addirittura 
@@ -217,7 +217,7 @@ nel 2002 ha lanciato Amazon Web Services.
 \subsection{AWS}
 Amazon Web Services è una sussidiaria di Amazon che offre servizi di cloud 
 computing e APIs per individui, aziende e governi.
-Il più popolare è Amazon Elastic Compute Clound (EC2), 
+Il più popolare è Amazon Elastic Compute Cloud (EC2), 
 un cluster di computer usabili tramite REST API, CLI o AWS console.
 È il corrispettivo di un server tradizionale nel contesto del cloud computing. 
 EC2 supporta una vasta gamma di processori, dai più tipici come Intel e AMD, 
@@ -228,12 +228,12 @@ L'utente può quindi personalizzare la macchina a suo piacimento.
 \\ Di frequente questo servizio viene usato in coppia con Amazon CloudWatch,
 il quale ha lo scopo di monitorare CPU, archiviazione e rete, e quando fosse 
 necessario aumentare le risorse.
-Il sistema ogni minuto, oppure secondo, può scegliere se effettuare dello 
-scaling.
+Il sistema ogni minuto, oppure secondo, può scegliere se allocare più 
+potenza.
 Il cliente può quindi abbandonare l'allocazione manuale di risorse, il server 
 pensa a tutto e addebita in base ai componenti usati in ogni determinato momento. 
-Non è più necessario avere qualcuno che manualmente cambia la potenza della 
-macchina su sollecitazione di essa.
+Non è più necessario avere qualcuno che manualmente, nel momento del bisogno, 
+cambi le caratteristiche della macchina.
 \\ Il server può essere di natura tradizionale o "istance-store". 
 Un istanza viene creata ogni volta che avviene un deploy, questa istanza è 
 unica e non è fissa.
@@ -277,7 +277,7 @@ Non si ha alcun controllo sul sistema operativo, ne alcun altro aspetto
 dell'ambiente.
 È possibile sviluppare un blocco logico e portarlo in produzione in maniera 
 estremamente facile, ma avendo il limite delle tecnologie compatibili.
-Il vantaggio di tale operazione è quello di prendersi carico del calcolo 
+\\ Il vantaggio di tale operazione è quello di prendersi carico del calcolo 
 necessario, liberato risorse preziose dal proprio server. 
 Lo spazio di archiviazione disponibile è il minimo necessario per salvare il 
 codice, qualsiasi altro file va salvato su un altro servizio.
@@ -291,7 +291,7 @@ In questo caso l'utente richiede un informazione particolare e la lamda
 va a trovare tale informazione da DynamoDB. 
 \\ Nel caso in cui sia necessario compiere un operazione raramente o in maniera 
 discontinua, lambda sembra essere un eccellente opzione. 
-Il sistema ha un tempo di accensione maggiore alla prima chiama (cold start)
+Il sistema ha un tempo di ritorno maggiore alla prima chiama (cold start)
 che per un tempo limitato viene evitato, dopo il primo avvio.
 Naturalmente non è una tecnologia adatto a ogni caso d'uso. 
 Un servizio è la scelta corretta 
@@ -546,9 +546,9 @@ Il primo grosso blocco è un classico blocco di ricerca che permette
 di trovare attività specifiche.
 È possibile stampare una lista di attività cliccando sulla stampante oppure una 
 scaricarle cliccando sul immagine alla sua destra, infine è possibile spedirle 
-per mail traite la lettera. 
+per mail tramite la lettera. 
 Il blocco sottostante è un riassunto delle attività, è compreso nella stampa. 
-Infine segue una tablle con tutti i dati importanti: id, stato, 
+Infine segue una tabella con tutti i dati importanti: id, stato, 
 prima posizione, ultima posizione, tipo, dispositivo, utente, 
 azienda e servizio in totale. 
 \begin{figure}[H]
@@ -560,7 +560,7 @@ In alto è possibile trovare il server di provenienza, con tanto di data e
 azienda.
 A destra è scritta la versione del software della lambda. 
 Il header è il blocco con il titolo e il logo di servizioGPS.
-Il body è il blocco che riassume il blocco visto nell'immagine precendente. 
+Il body è il blocco che riassume il blocco visto nell'immagine precedente. 
 Il table è l'elenco di tutte le attività, che è identico a quello sul server, 
 esclusa l'ultima posizione.
 In questo caso sono presenti 6 attività, ma possono essere fino a 20 mila. 
@@ -571,7 +571,7 @@ In questo caso sono presenti 6 attività, ma possono essere fino a 20 mila.
 
 Alternativamente è possibile stampare i dettagli di un unica attività. 
 In questa pagina è possibile vedere nel dettaglio il percorso fatto 
-dal dispositivo, i punti GPS e la rapresentazione sulla cartina. 
+dal dispositivo, i punti GPS e la rappresentazione sulla cartina. 
 \begin{figure}[H]
 \includegraphics[width =\textwidth]{singola_attività.png}
 \caption{Attività visualizzazione}
@@ -674,69 +674,68 @@ dei dati ai clienti.
 \addcontentsline{toc}{section}{Bibliografia}
 
 \begin{thebibliography}{9}
-  \bibitem{link}
+  \bibitem{}
   AWS documentazione. 
   \url{https://docs.aws.amazon.com/lambda/index.html}
 
-  \bibitem{link}
+  \bibitem{}
   Ruby documentazione.
   \url{https://ruby-doc.org/}
 
-  \bibitem{link}
+  \bibitem{}
   Rails documentazione.
   \url{https://api.rubyonrails.org/}
 
-  \bibitem{link}
+  \bibitem{}
   Nodejs documentazione.
   \url{https://nodejs.org/it/docs}
 
-  \bibitem{link}
+  \bibitem{}
   Mozilla documentazione.
   \url{https://developer.mozilla.org/en-US/}
 
-  \bibitem{link}
+  \bibitem{}
   Pdf-kit documentazione.
   \url{https://pdfkit.org/}
 
-  \bibitem{link}
+  \bibitem{}
   Microservizi wiki.
   \url{https://en.wikipedia.org/wiki/Microservices}
 
-  \bibitem{link}
+  \bibitem{}
   Cloud computing wiki.
   \url{https://en.wikipedia.org/wiki/Cloud_computing}
 
 
-  \bibitem{link}
+  \bibitem{}
   Amazon Web Service wiki.
   \url{https://en.wikipedia.org/wiki/Amazon_Web_Services}
 
-  \bibitem{link}
+  \bibitem{}
   Remote job entry wiki.
   \url{https://en.wikipedia.org/wiki/Remote_job_entry}
 
-  \bibitem{link}
+  \bibitem{}
   Amazon aurora.
   \url{https://aws.amazon.com/it/rds/aurora/?nc2=h_ql_prod_fs_aa}
 
-  \bibitem{link}
+  \bibitem{}
   Amazon DynamoDB
   \url{https://aws.amazon.com/it/dynamodb/?nc2=h_ql_prod_fs_ddb}
 
-  \bibitem{link}
+  \bibitem{}
   Amazon S3.
   \url{https://aws.amazon.com/it/s3o /?nc2=h_ql_prod_fs_s3}
 
-
-  \bibitem{link}
+  \bibitem{}
   Amazon SNS.
   \url{https://aws.amazon.com/it/sns/?nc2=h_ql_prod_ap_sns}
 
-  \bibitem{link}
+  \bibitem{}
   Amazon SQS.
   \url{https://aws.amazon.com/it/sqs/?nc2=h_ql_prod_ap_sqs}
 
-  \bibitem{link}
+  \bibitem{}
   Amazon Lambda.
   \url{https://aws.amazon.com/it/lambda/?nc2=h_ql_prod_cp_lbd}
 
